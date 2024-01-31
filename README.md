@@ -27,3 +27,6 @@ Para comenzar con este proyecto, sigue estos pasos:
 2. Explora el código fuente, la documentación y los ejemplos proporcionados en el repositorio.
 
 3. Sumérgete en el mundo de los sistemas distribuidos construyendo, probando y optimizando tus propias implementaciones.
+
+### DISCLAIMER
+Este READMe ha sido generado automáticamente por IA
