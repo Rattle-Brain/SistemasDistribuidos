@@ -12,7 +12,7 @@ Este repositorio se sumerge en las complejidades de los sistemas distribuidos, p
 
 - **Desde Cero**: Aprende a construir sistemas distribuidos desde cero, obteniendo conocimientos sobre los principios fundamentales que subyacen a su funcionalidad.
 
-- **Eficiencia Importa**: Explora técnicas para optimizar sistemas distribuidos, asegurando que operen sin problemas y funcionen eficientemente bajo diversas condiciones.
+- **La Eficiencia Importa**: Explora técnicas para optimizar sistemas distribuidos, asegurando que operen sin problemas y funcionen eficientemente bajo diversas condiciones.
 
 ## Empezar
 
@@ -28,5 +28,5 @@ Para comenzar con este proyecto, sigue estos pasos:
 
 3. Sumérgete en el mundo de los sistemas distribuidos construyendo, probando y optimizando tus propias implementaciones.
 
-### DISCLAIMER
+### **DISCLAIMER
 Este READMe ha sido generado automáticamente por IA
