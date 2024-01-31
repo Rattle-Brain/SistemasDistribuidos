@@ -3,7 +3,7 @@
 int main()
 {
     char   c = 'a';
-    int    i = 0;
+    int    i = 500;
     double z = 0.0;
 
     // Punteros a las variables anteriores
@@ -20,4 +20,7 @@ int main()
     printf("Tamaño del puntero p_c: %lu\n", sizeof(p_c));
     printf("Tamaño del puntero p_i: %lu\n", sizeof(p_i));
     printf("Tamaño del puntero p_z: %lu\n", sizeof(p_z));
+
+    int j = 3;
+    printf ("%d\n", (*p_i)*j);
 }
