@@ -28,5 +28,5 @@ Para comenzar con este proyecto, sigue estos pasos:
 
 3. Sumérgete en el mundo de los sistemas distribuidos construyendo, probando y optimizando tus propias implementaciones.
 
-### **DISCLAIMER
+### **DISCLAIMER**
 Este READMe ha sido generado automáticamente por IA
