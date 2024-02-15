@@ -4,7 +4,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void main ()
+int main ()
 {
     int fds[2];
     pid_t pid;
@@ -46,4 +46,5 @@ void main ()
             wait(0);
         }
     }
+    return 0;
 }

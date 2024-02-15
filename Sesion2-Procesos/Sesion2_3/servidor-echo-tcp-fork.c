@@ -47,13 +47,13 @@ int main(int argc, char* argv[]) {
     d_local.sin_addr.s_addr = htonl(INADDR_ANY);
     d_local.sin_port = htons(port);
 
-    bind(sock_pasivo, (struct sockaddr *)&d_local, sizeof(d_local)); // Comprobar valor devuelto por bind
+    (void)bind(sock_pasivo, (struct sockaddr *)&d_local, sizeof(d_local)); // Comprobar valor devuelto por bind
     listen(sock_pasivo, SOMAXCONN);     // Comprobar valor devuelto por listen
 
     while (1) { // Bucle infinito de atención a clientes
         printf("Soy el proceso padre (%d) antes del fork()\n", getpid());
         sock_datos = accept(sock_pasivo, 0, 0);
-        if((pid == fork()) < 0) //fork falla -> tiene que atenderlo el padre pq el cli ya esta accepted
+        if((pid = fork()) < 0) //fork falla -> tiene que atenderlo el padre pq el cli ya esta accepted
         {
             perror("Fallo en el fork, el cliente lo atiende el padre\n");
             while((leidos = read(sock_datos, mensaje, sizeof(mensaje))) > 0)

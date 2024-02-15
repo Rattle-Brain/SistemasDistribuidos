@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     d_local.sin_addr.s_addr = htonl(INADDR_ANY);
     d_local.sin_port = htons(port);
 
-    bind(sock_pasivo, (struct sockaddr *)&d_local, sizeof(d_local)); // Comprobar valor devuelto por bind
+    (void)bind(sock_pasivo, (struct sockaddr *)&d_local, sizeof(d_local)); // Comprobar valor devuelto por bind
     listen(sock_pasivo, SOMAXCONN);     // Comprobar valor devuelto por listen
 
     while (1) { // Bucle infinito de atención a clientes
