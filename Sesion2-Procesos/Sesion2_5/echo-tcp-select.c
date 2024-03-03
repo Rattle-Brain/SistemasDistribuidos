@@ -106,6 +106,7 @@ int buscar_maximo(int tcp, int *lista, int num)
             resultado = lista[i];
         }
     }
+    return resultado;
 }
 
 int main(int argc, char * argv[])
