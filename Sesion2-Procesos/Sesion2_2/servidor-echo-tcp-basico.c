@@ -14,12 +14,7 @@ int main(int argc, char* argv[]) {
     char mensaje[MSG_LEN];
     int leidos;
 
-    if(argc < 2)
-    {
-        perror("Es necesario incluir al menos un puerto paara la conexión\n");
-        perror("\tservidor-echo-tcp-basico [port]\n");
-        exit(EXIT_FAILURE);
-    }
+    
 
     int port = atoi(argv[1]);
     if(port < 1024 || port > 65536)
