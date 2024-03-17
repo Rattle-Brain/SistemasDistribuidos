@@ -116,8 +116,6 @@ int main() {
             scanf("%s", resultado.Resultado_u.error);
             break;
     }
-
-    perror("Variable asignada a campo Resultado\n");
     
     // Abre el archivo Resultado.dat para escritura binaria
     FILE *file_result = fopen("Resultado.dat", "wb");
@@ -125,21 +123,16 @@ int main() {
         perror("Error al abrir el archivo Resultado.dat");
         exit(EXIT_FAILURE);
     }
-    perror("Resultado.dat creado\n");
     
     // Crea un flujo XDR para escribir en el archivo
     XDR xdr_result;
     xdrstdio_create(&xdr_result, file_result, XDR_ENCODE);
-
-    perror("XDR creado\n");
     
     // Volca la variable de tipo Resultado al archivo utilizando el filtro xdr_Resultado()
     if (!xdr_Resultado(&xdr_result, &resultado)) {
         fprintf(stderr, "Error al volcar la variable de tipo Resultado al archivo\n");
         exit(EXIT_FAILURE);
     }
-
-    perror("xdr_Resultado ejecutada correctamente\n");
     
     // Destruye el flujo XDR y cierra el archivo
     xdr_destroy(&xdr_result);
