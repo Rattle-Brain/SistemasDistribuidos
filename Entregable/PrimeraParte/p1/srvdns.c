@@ -73,6 +73,8 @@ pthread_mutex_t mfsal;
 // Puntero a FILE del fichero de salida
 FILE *fpsal = NULL;
 
+
+
 // ====================================================================
 // FUNCION handler de las señales recibidas por el proceso
 // ====================================================================
@@ -107,11 +109,54 @@ void procesa_argumentos(int argc, char *argv[])
     // Verificación de los argumentos e inicialización de las correspondientes variables globales.
     // Puedes usar las funciones en util.h
 
-    // A RELLENAR
-    |
-    |
-    |
-    |
+    // Validamos puerto
+    if(valida_numero(argv[2]))
+    {
+        puerto = atoi(argv[2]);
+        if(!puerto_en_rango(puerto))
+        {
+            perror("Puerto no valido. Fuera de rango\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else
+    {
+        perror("Puerto no valido. No numerico\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Comprobamos el protocolo
+    if(strcmp(argv[1], "u"))
+    {
+        es_stream = FALSO;
+    }
+    else if (!strcmp(argv[1], "t") && strcmp(argv[1], "u")) 
+    {
+        perror("Protocolo invalido.\n\tt - TCP\n\tu - UDP\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Comprobamos el numero de hilos de atencion
+    if(valida_numero(argv[3]) && atoi(argv[3]) <= MAX_HILOS_WORK)
+    {
+        num_hilos_aten = atoi(argv[3]);
+    }
+    else 
+    {
+        perror("Numero de hilos de atencion no valido. MAX 10\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    // Comprobamos el numero de hilos worker
+    if(valida_numero(argv[4]) && atoi(argv[4]) <= MAX_HILOS_WORK)
+    {
+        num_hilos_work = atoi(argv[4]);
+    }
+    else 
+    {
+        perror("Numero de hilos worker no valido. MAX 10\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 // Función de utilidad para saber si la consulta DNS es del tipo

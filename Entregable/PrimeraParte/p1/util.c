@@ -71,3 +71,14 @@ void log_debug(char *msg)
 
     printf("[%ld.%09ld] %s", t.tv_sec, t.tv_nsec, msg);
 }
+
+/*
+    Valida que el un número se encuentre entre los puertos
+    validos disponibles.
+    [1024-65535]
+*/
+int puerto_en_rango(int p)
+{
+    if(p < MIN_PORT || p > MAX_PORT) return FALSO;
+    else return CIERTO;
+}
