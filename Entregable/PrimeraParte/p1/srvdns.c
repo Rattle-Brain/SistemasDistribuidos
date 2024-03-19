@@ -73,6 +73,9 @@ pthread_mutex_t mfsal;
 // Puntero a FILE del fichero de salida
 FILE *fpsal = NULL;
 
+// nombre que se le da al fpsal para guardarlo en disco
+char * fpsal_nombre;
+
 
 
 // ====================================================================
@@ -157,6 +160,8 @@ void procesa_argumentos(int argc, char *argv[])
         sprintf(stderr, "Numero de hilos worker no valido. MAX %d\n", MAX_HILOS_WORK);
         exit(EXIT_FAILURE);
     }
+
+    fpsal_nombre = argv[7];
 }
 
 // Función de utilidad para saber si la consulta DNS es del tipo
@@ -360,24 +365,32 @@ void *Worker(int *id)
 
             // Escribimos la línea en el fichero de log (con exclusión mutua entre workers)
             // A RELLENAR
+
+            // Inicializamos el fichero fpsal
+            fpsal = fopen(fpsal_nombre, "a+");
+            if (fpsal == NULL)
+            {
+                perror("Error al abrir el archivo de registro");
+                exit(EXIT_FAILURE);
+            }
+
             pthread_mutex_lock(&mfsal);
             fprintf(fpsal, "%s,%s,%s,%s,%s,%s,%s\n", ip_cliente, &puerto_cliente,
                         fechahora, dombuscado, recordbuscado, clavebusqueda, msg);
 
             pthread_mutex_unlock(&mfsal);
 
-            // Enviar respuesta al cliente
-            if (es_stream)
-            {
-                // A RELLENAR
-                |
-                |
+            // Cerramos el fichero
+            fclose(fpsal);
 
-            }
-            else
+            // Enviar respuesta al cliente
+            if (es_stream) // TCP
             {
-                // A RELLENAR
-                |
+                send(pet->s, msg, strlen(msg), 0);
+            }
+            else // UDP
+            {
+                sendto(pet->s, msg, strlen(msg), 0, (struct sockaddr *)&(pet->d_cliente), sizeof(pet->d_cliente));
             }
             
             // Liberar memoria
