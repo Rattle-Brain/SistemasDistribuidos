@@ -366,7 +366,7 @@ void *Worker(int *id)
             // Escribimos la línea en el fichero de log (con exclusión mutua entre workers)
             // A RELLENAR
 
-            // Inicializamos el fichero fpsal
+            // Append al fichero fpsal. "a+" indica que si no existe se crea uno nuevo.
             fpsal = fopen(fpsal_nombre, "a+");
             if (fpsal == NULL)
             {
