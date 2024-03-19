@@ -68,6 +68,17 @@ void procesa_argumentos(int argc, char *argv[])
     // Puedes usar las funciones en util.h
 
     // A RELLENAR
+    // Validamos IP
+    if(valida_ip(argv[1]))
+    {
+        ip_srvdns = argv[1];
+    }
+    else 
+    {
+        perror("IP no válida. Formato XXX.XXX.XXX.XXX donde XXX = [0-255].\n");
+        exit(EXIT_FAILURE);
+    }
+
     // Validamos puerto
     if(valida_numero(argv[2]))
     {
@@ -81,6 +92,28 @@ void procesa_argumentos(int argc, char *argv[])
     else
     {
         perror("Puerto no valido. No numerico\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Comprobamos el protocolo
+    if(strcmp(argv[1], "u"))
+    {
+        es_stream = FALSO;
+    }
+    else if (!strcmp(argv[1], "t") && strcmp(argv[1], "u")) 
+    {
+        perror("Protocolo invalido.\n\tt - TCP\n\tu - UDP\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Comprobamos el numero de hilos de atencion
+    if(valida_numero(argv[3]) && atoi(argv[3]) <= MAXHILOSCLIENTE && atoi(argv[3]) >= 1)
+    {
+        nhilos = atoi(argv[3]);
+    }
+    else 
+    {
+        sprintf(stderr, "Numero de hilos no valido. MIN 0 - MAX %d\n", MAXHILOSCLIENTE);
         exit(EXIT_FAILURE);
     }
 }
