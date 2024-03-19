@@ -370,7 +370,7 @@ void *Worker(int *id)
             fpsal = fopen(fpsal_nombre, "a+");
             if (fpsal == NULL)
             {
-                perror("Error al abrir el archivo de registro");
+                perror("Error al abrir el archivo de registro\n");
                 exit(EXIT_FAILURE);
             }
 
@@ -443,7 +443,7 @@ void *AtencionPeticiones(param_hilo_aten *q)
             sock_dat = accept(s, (struct sockaddr *)&d_cliente, &l_dir);
             if (sock_dat < 0)
             {
-                perror("Error al aceptar la conexion");
+                perror("Error al aceptar la conexion\n");
                 exit(EXIT_FAILURE);
             }
 
@@ -451,7 +451,7 @@ void *AtencionPeticiones(param_hilo_aten *q)
             recibidos = recv(sock_dat, buffer, sizeof(buffer), 0);
             if (recibidos < 0)
             {
-                perror("Error al recibir el mensaje");
+                perror("Error al recibir el mensaje\n");
                 exit(EXIT_FAILURE);
             }
             else if (recibidos == 0)
@@ -536,14 +536,14 @@ int main(int argc, char *argv[])
     // Comprobamos errores al crear socket
     if (sock < 0)
     {
-        perror("Error al crear el socket");
+        perror("Error al crear el socket\n");
         exit(EXIT_FAILURE);
     }
 
     // Hacemos bind para dar nombre al socket
     if (bind(sock, (struct sockaddr *)&d_local, sizeof(d_local)) < 0)
     {
-        perror("Error al realizar el bind");
+        perror("Error al realizar el bind\n");
         exit(EXIT_FAILURE);
     }
 
@@ -552,7 +552,7 @@ int main(int argc, char *argv[])
     {
         if (listen(sock, 5) < 0)
         {
-            perror("Error al poner el socket en modo de escucha");
+            perror("Error al poner el socket en modo de escucha\n");
             exit(EXIT_FAILURE);
         }
     }
@@ -585,7 +585,7 @@ int main(int argc, char *argv[])
         // A RELLENAR
         if (q == NULL)
         {
-            perror("Error al asignar memoria para el parámetro del hilo de atención");
+            perror("Error al asignar memoria para el parámetro del hilo de atención\n");
             exit(EXIT_FAILURE);
         }
 
@@ -594,7 +594,7 @@ int main(int argc, char *argv[])
         
         if (pthread_create(&hilos_aten[i], NULL, (void *)AtencionPeticiones, q) != 0)
         {
-            perror("Error al crear el hilo de atención");
+            perror("Error al crear el hilo de atención\n");
             exit(EXIT_FAILURE);
         }
     }
@@ -603,8 +603,17 @@ int main(int argc, char *argv[])
     for (i = 0; i < num_hilos_work; i++)
     {
         id = (int *)malloc(sizeof(int));
+        if (id == NULL)
+        {
+            perror("Error al asignar memoria para el parámetro del hilo work\n");
+            exit(EXIT_FAILURE);
+        }
         *id = i;
-        pthread_create(&hilos_work[i], NULL, (void *)Worker, (void *)id);
+        if(pthread_create(&hilos_work[i], NULL, (void *)Worker, (void *)id))
+        {
+            perror("Error al crear el hilo work\n");
+            exit(EXIT_FAILURE);
+        }
     }
 
     // Esperar a que terminen todos los hilos (espera infinita en realidad
