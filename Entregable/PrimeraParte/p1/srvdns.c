@@ -101,7 +101,7 @@ static void handler(int signum)
 
 void procesa_argumentos(int argc, char *argv[])
 {
-    if (argc < 8)
+    if (argc != 8)
     {
         fprintf(stderr, "Forma de uso: %s {t|u} puerto fichero_registros tam_cola num_hilos_aten num_hilos_worker fich_log \n", argv[0]);
         exit(1);
@@ -146,7 +146,7 @@ void procesa_argumentos(int argc, char *argv[])
         perror("Numero de hilos de atencion no valido. MAX 10\n");
         exit(EXIT_FAILURE);
     }
-    
+
     // Comprobamos el numero de hilos worker
     if(valida_numero(argv[4]) && atoi(argv[4]) <= MAX_HILOS_WORK)
     {
