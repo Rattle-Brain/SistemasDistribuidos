@@ -257,9 +257,9 @@ void *Worker(int *id)
         // un mensaje de depuración mostrando el id del hilo y el mensaje
         // extraido de la cola
         // A RELLENAR
-        |
-        |
-        |
+        pet = obtener_dato_cola(&cola_peticiones);
+        sprintf(pantalla, "Hilo %d recibe peticion\n\tMensaje: %s\n", id_worker, pet->msg);
+        log_debug(pantalla);
 
         fp = fopen(nomfrecords, "r");
         if (fp == NULL)
@@ -272,8 +272,26 @@ void *Worker(int *id)
             // Separar el mensaje en sus constituyentes, con ayuda de la función
             // procesa_mensaje_recibido()
             // A RELLENAR
-            |
-            |
+            
+            // Separar el mensaje en sus constituyentes, con ayuda de la función
+            // procesa_mensaje_recibido()
+            procesa_mensaje_recibido(valorrecord, &domleido, &recordleido, claveleida);
+
+            // Comparar el dominio leido con el recibido en la consulta DNS
+            if (strcmp(domleido, dombuscado) == 0 && strcmp(recordleido, recordbuscado) == 0)
+            {
+                if (primera)
+                {
+                    // Construir la cadena de respuesta al cliente
+                    sprintf(msg, "%s %s %s", dombuscado, recordbuscado, claveleida);
+                    primera = FALSO;
+                }
+                else
+                {
+                    // Concatenar a la cadena de respuesta el valor del registro
+                    strcat(msg, claveleida);
+                }
+            }
 
             primera = CIERTO;
             bzero(msg, TAMMSG);
@@ -320,10 +338,10 @@ void *Worker(int *id)
                     // Si no se trata de un registro que pueda tener varios resultados
                     // salimos del bucle pues ya hemos encontrado un resultado
                     // A RELLENAR
-                    |
-                    |
-                    |
-                    |
+                    if (!es_multiresultado(recordleido))
+                    {
+                        break;
+                    }
                 }
             }
             fclose(fp);
@@ -342,10 +360,11 @@ void *Worker(int *id)
 
             // Escribimos la línea en el fichero de log (con exclusión mutua entre workers)
             // A RELLENAR
-            |
-            |
-            |
-            |
+            pthread_mutex_lock(&mfsal);
+            fprintf(fpsal, "%s,%s,%s,%s,%s,%s,%s\n", ip_cliente, &puerto_cliente,
+                        fechahora, dombuscado, recordbuscado, clavebusqueda, msg);
+
+            pthread_mutex_unlock(&mfsal);
 
             // Enviar respuesta al cliente
             if (es_stream)
