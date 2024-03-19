@@ -73,7 +73,7 @@ void insertar_dato_cola(Cola *cola, dato_cola *dato)
     // A RELLENAR
     if (cola == NULL || dato == NULL)
     {
-        perror("Error: Puntero nulo en insertar_dato_cola");
+        perror("Puntero a cola o a dato es NULL. No se puede insertar\n");
         exit(1);
     }
 
@@ -104,7 +104,7 @@ dato_cola *obtener_dato_cola(Cola *cola)
     // A RELLENAR
     if (cola == NULL)
     {
-        perror("Error: Puntero nulo en obtener_dato_cola");
+        perror("Puntero a cola es NULL. No se puede obtener dato\n");
         exit(1);
     }
 
