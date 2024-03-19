@@ -438,10 +438,28 @@ void *AtencionPeticiones(param_hilo_aten *q)
             // No se cierra el socket de datos, pues lo necesitará el worker
             // y lo cerrará él
             // A RELLENAR
-            |
-            |
-            |
-            |
+
+            // Aceptamos la conexion
+            sock_dat = accept(s, (struct sockaddr *)&d_cliente, &l_dir);
+            if (sock_dat < 0)
+            {
+                perror("Error al aceptar la conexion");
+                exit(EXIT_FAILURE);
+            }
+
+            // Recibimos el mensaje del cliente
+            recibidos = recv(sock_dat, buffer, sizeof(buffer), 0);
+            if (recibidos < 0)
+            {
+                perror("Error al recibir el mensaje");
+                exit(EXIT_FAILURE);
+            }
+            else if (recibidos == 0)
+            {
+                printf("Cliente desconectado\n");
+                close(sock_dat);
+                continue;
+            }
         }
         else // UDP
         {
@@ -466,14 +484,13 @@ void *AtencionPeticiones(param_hilo_aten *q)
 
         // Copiar el socket que debe usar el worker y meter el dato en la cola
         // A RELLENAR
-        |
-        |
-        |
-        |
-        |
-        |
-        |
-        |
+        
+        //Copiamos los datos que faltan
+        p->s = sock_dat;
+        p->d_cliente = d_cliente;
+
+        // Insertamos el dato en la cola
+        insertar_dato_cola(&cola_peticiones, p);
     }
 }
 
