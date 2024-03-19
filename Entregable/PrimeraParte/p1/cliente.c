@@ -68,10 +68,21 @@ void procesa_argumentos(int argc, char *argv[])
     // Puedes usar las funciones en util.h
 
     // A RELLENAR
-    |
-    |
-    |
-    |
+    // Validamos puerto
+    if(valida_numero(argv[2]))
+    {
+        puerto_srvdns = atoi(argv[2]);
+        if(!puerto_en_rango(puerto_srvdns))
+        {
+            perror("Puerto no valido. Fuera de rango\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else
+    {
+        perror("Puerto no valido. No numerico\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 void salir_bien(int s)

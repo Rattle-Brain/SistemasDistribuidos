@@ -137,24 +137,24 @@ void procesa_argumentos(int argc, char *argv[])
     }
 
     // Comprobamos el numero de hilos de atencion
-    if(valida_numero(argv[3]) && atoi(argv[3]) <= MAX_HILOS_WORK)
+    if(valida_numero(argv[3]) && atoi(argv[3]) <= MAX_HILOS_WORK && atoi(argv[3]) >= 1)
     {
         num_hilos_aten = atoi(argv[3]);
     }
     else 
     {
-        perror("Numero de hilos de atencion no valido. MAX 10\n");
+        sprintf(stderr, "Numero de hilos de atencion no valido. MAX %d\n", MAX_HILOS_WORK);
         exit(EXIT_FAILURE);
     }
 
     // Comprobamos el numero de hilos worker
-    if(valida_numero(argv[4]) && atoi(argv[4]) <= MAX_HILOS_WORK)
+    if(valida_numero(argv[4]) && atoi(argv[4]) <= MAX_HILOS_WORK && atoi(argv[3]) >= 1)
     {
         num_hilos_work = atoi(argv[4]);
     }
     else 
     {
-        perror("Numero de hilos worker no valido. MAX 10\n");
+        sprintf(stderr, "Numero de hilos worker no valido. MAX %d\n", MAX_HILOS_WORK);
         exit(EXIT_FAILURE);
     }
 }
