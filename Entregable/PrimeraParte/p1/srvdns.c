@@ -521,13 +521,41 @@ int main(int argc, char *argv[])
     // Inicializar el socket (teniendo en cuenta si es orientado a conexión o no)
     // y asignarle el puerto de escucha
     // A RELLENAR
-    |
-    |
-    |
-    |
-    |
-    |
-    |
+
+    // Creamos un socket u otro dependiendo del valor de es_stream
+    if(es_stream) // Es TCP
+    {
+        sock = socket(PF_INET, SOCK_STREAM, 0);
+
+    }
+    else // Es UDP
+    {
+        sock = socket(PF_INET, SOCK_DGRAM, 0);
+    }
+    
+    // Comprobamos errores al crear socket
+    if (sock < 0)
+    {
+        perror("Error al crear el socket");
+        exit(EXIT_FAILURE);
+    }
+
+    // Hacemos bind para dar nombre al socket
+    if (bind(sock, (struct sockaddr *)&d_local, sizeof(d_local)) < 0)
+    {
+        perror("Error al realizar el bind");
+        exit(EXIT_FAILURE);
+    }
+
+    // Establecer el socket en modo de escucha si es TCP
+    if (es_stream)
+    {
+        if (listen(sock, 5) < 0)
+        {
+            perror("Error al poner el socket en modo de escucha");
+            exit(EXIT_FAILURE);
+        }
+    }
 
     // creamos el espacio para los objetos de datos de hilo
     hilos_aten = (pthread_t *)malloc(sizeof(pthread_t) * num_hilos_aten);
@@ -555,10 +583,20 @@ int main(int argc, char *argv[])
         q = (param_hilo_aten *)malloc(sizeof(param_hilo_aten));
         
         // A RELLENAR
-        |
-        |
-        |
-        |
+        if (q == NULL)
+        {
+            perror("Error al asignar memoria para el parámetro del hilo de atención");
+            exit(EXIT_FAILURE);
+        }
+
+        q->s = sock;
+        q->num_hilo = i;
+        
+        if (pthread_create(&hilos_aten[i], NULL, (void *)AtencionPeticiones, q) != 0)
+        {
+            perror("Error al crear el hilo de atención");
+            exit(EXIT_FAILURE);
+        }
     }
 
     // creamos un hilo por cada worker, pasándole el parámetro apropiado
