@@ -12,6 +12,7 @@ int valida_numero(char *str)
     {
         if (!isdigit(*str))
         { // si el caracter no es un numero retorna falso
+            perror("Numero invalido\n");
             return FALSO;
         }
         str++; // apuntamos al siguiente caracter

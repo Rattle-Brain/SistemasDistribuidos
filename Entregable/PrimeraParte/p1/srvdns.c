@@ -139,25 +139,34 @@ void procesa_argumentos(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    // Comprobamos el numero de hilos de atencion
-    if(valida_numero(argv[3]) && atoi(argv[3]) <= MAX_HILOS_WORK && atoi(argv[3]) >= 1)
+    if(valida_numero(argv[4]) && atoi(argv[4]) > 0)
     {
-        num_hilos_aten = atoi(argv[3]);
+        tam_cola = atoi(argv[4]);
+    }
+    else
+    {
+        perror("Tamaño de cola inválido.\n");
+    }
+
+    // Comprobamos el numero de hilos de atencion
+    if(valida_numero(argv[5]) && atoi(argv[5]) <= MAX_HILOS_WORK && atoi(argv[5]) >= 1)
+    {
+        num_hilos_aten = atoi(argv[5]);
     }
     else 
     {
-        sprintf(stderr, "Numero de hilos de atencion no valido. MAX %d\n", MAX_HILOS_WORK);
+        fprintf(stderr, "Numero de hilos de atencion no valido. MAX %d\n", MAX_HILOS_WORK);
         exit(EXIT_FAILURE);
     }
 
     // Comprobamos el numero de hilos worker
-    if(valida_numero(argv[4]) && atoi(argv[4]) <= MAX_HILOS_WORK && atoi(argv[3]) >= 1)
+    if(valida_numero(argv[6]) && atoi(argv[6]) <= MAX_HILOS_WORK && atoi(argv[6]) >= 1)
     {
-        num_hilos_work = atoi(argv[4]);
+        num_hilos_work = atoi(argv[6]);
     }
     else 
     {
-        sprintf(stderr, "Numero de hilos worker no valido. MAX %d\n", MAX_HILOS_WORK);
+        fprintf(stderr, "Numero de hilos worker no valido. MAX %d\n", MAX_HILOS_WORK);
         exit(EXIT_FAILURE);
     }
 
@@ -517,6 +526,7 @@ int main(int argc, char *argv[])
     d_local.sin_family = AF_INET;
     d_local.sin_addr.s_addr = htonl(INADDR_ANY);
     d_local.sin_port = htons(puerto);
+    perror("sonda 1\n");
 
     // Inicializar el socket (teniendo en cuenta si es orientado a conexión o no)
     // y asignarle el puerto de escucha
@@ -532,6 +542,7 @@ int main(int argc, char *argv[])
     {
         sock = socket(PF_INET, SOCK_DGRAM, 0);
     }
+    perror("sonda 2\n");
     
     // Comprobamos errores al crear socket
     if (sock < 0)
