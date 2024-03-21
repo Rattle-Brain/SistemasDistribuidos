@@ -112,7 +112,20 @@ void procesa_argumentos(int argc, char *argv[])
     // Verificación de los argumentos e inicialización de las correspondientes variables globales.
     // Puedes usar las funciones en util.h
 
-    // Validamos puerto
+    // Comprobamos el protocolo
+    if(strcmp(argv[1], "u") == 0)
+    {
+        es_stream = FALSO;
+    }
+    else if (strcmp(argv[1], "t") != 0 && strcmp(argv[1], "u") != 0) 
+    {
+        perror("Protocolo invalido.\n\tt - TCP\n\tu - UDP\n");
+        exit(EXIT_FAILURE);
+    }
+
+    nomfrecords = argv[3];
+
+     // Validamos puerto
     if(valida_numero(argv[2]))
     {
         puerto = atoi(argv[2]);
@@ -128,16 +141,6 @@ void procesa_argumentos(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    // Comprobamos el protocolo
-    if(strcmp(argv[1], "u"))
-    {
-        es_stream = FALSO;
-    }
-    else if (!strcmp(argv[1], "t") && strcmp(argv[1], "u")) 
-    {
-        perror("Protocolo invalido.\n\tt - TCP\n\tu - UDP\n");
-        exit(EXIT_FAILURE);
-    }
 
     if(valida_numero(argv[4]) && atoi(argv[4]) > 0)
     {
@@ -393,8 +396,9 @@ void *Worker(int *id)
             fclose(fpsal);
 
             // Enviar respuesta al cliente
-            if (es_stream) // TCP
+            if (es_stream == CIERTO) // TCP
             {
+                perror("Sonda 4: Enviamos respuesta TCP");
                 send(pet->s, msg, strlen(msg), 0);
             }
             else // UDP
@@ -435,6 +439,7 @@ void *AtencionPeticiones(param_hilo_aten *q)
     // Extraemos el socket pasivo del parámetro y liberamos la memoria que
     // había sido reservada para el parámetro desde main
     s = q->s;
+
     free(q);
 
     while (1) // Bucle infinito de atencion de mensajes
@@ -449,15 +454,19 @@ void *AtencionPeticiones(param_hilo_aten *q)
             // A RELLENAR
 
             // Aceptamos la conexion
-            sock_dat = accept(s, (struct sockaddr *)&d_cliente, &l_dir);
+
+            fprintf(stderr, "Antes del accept. Socket %d\n", s);
+            sock_dat = accept(s, 0, 0);
             if (sock_dat < 0)
             {
                 perror("Error al aceptar la conexion\n");
                 exit(EXIT_FAILURE);
             }
+            perror("Despues del accept");
+
 
             // Recibimos el mensaje del cliente
-            recibidos = recv(sock_dat, buffer, sizeof(buffer), 0);
+            recibidos = read(sock_dat, buffer, sizeof(buffer));
             if (recibidos < 0)
             {
                 perror("Error al recibir el mensaje\n");
@@ -526,7 +535,6 @@ int main(int argc, char *argv[])
     d_local.sin_family = AF_INET;
     d_local.sin_addr.s_addr = htonl(INADDR_ANY);
     d_local.sin_port = htons(puerto);
-    perror("sonda 1\n");
 
     // Inicializar el socket (teniendo en cuenta si es orientado a conexión o no)
     // y asignarle el puerto de escucha
@@ -542,7 +550,6 @@ int main(int argc, char *argv[])
     {
         sock = socket(PF_INET, SOCK_DGRAM, 0);
     }
-    perror("sonda 2\n");
     
     // Comprobamos errores al crear socket
     if (sock < 0)
@@ -558,6 +565,8 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
+    perror("Sonda 1: Bind hecho");
+
     // Establecer el socket en modo de escucha si es TCP
     if (es_stream)
     {
@@ -566,6 +575,7 @@ int main(int argc, char *argv[])
             perror("Error al poner el socket en modo de escucha\n");
             exit(EXIT_FAILURE);
         }
+        perror("Sonda2: TCP puesto en escucha");
     }
 
     // creamos el espacio para los objetos de datos de hilo
@@ -585,6 +595,8 @@ int main(int argc, char *argv[])
     // inicializamos la cola
     inicializar_cola(&cola_peticiones, tam_cola);
 
+    perror("Sonda 3: Cola inicializada");
+
     // Inicializamos los mutex de exclusión al fichero de log
     pthread_mutex_init(&mfsal, NULL);
 
@@ -600,6 +612,7 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
+        fprintf(stderr, "Asignacion del socket al hilo. Socket %d\n", sock);
         q->s = sock;
         q->num_hilo = i;
         

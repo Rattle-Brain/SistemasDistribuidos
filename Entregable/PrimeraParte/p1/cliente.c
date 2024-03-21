@@ -69,7 +69,13 @@ void procesa_argumentos(int argc, char *argv[])
 
     // A RELLENAR
     // Validamos IP
-    if(valida_ip(argv[1]))
+
+    // Hacemos copia de IP para evitar posibles problemas
+
+    char * ip_serv_dup = strdup(argv[1]);
+
+
+    if(valida_ip(ip_serv_dup))
     {
         ip_srvdns = argv[1];
     }
@@ -96,11 +102,12 @@ void procesa_argumentos(int argc, char *argv[])
     }
 
     // Comprobamos el protocolo
-    if(strcmp(argv[1], "u"))
+    if(strcmp(argv[3], "u") == 0)
     {
+        perror("Es udp");
         es_stream = FALSO;
     }
-    else if (!strcmp(argv[1], "t") && strcmp(argv[1], "u")) 
+    else if (strcmp(argv[3], "t") == 1 && strcmp(argv[3], "u") == 1) 
     {
         perror("Protocolo invalido.\n\tt - TCP\n\tu - UDP\n");
         exit(EXIT_FAILURE);
@@ -140,16 +147,19 @@ void *hilo_lector(datos_hilo *p)
     srv_addr.sin_family = AF_INET;
     srv_addr.sin_port = htons(puerto_srvdns);
     inet_aton(ip_srvdns, &srv_addr.sin_addr);
+    fprintf(stderr, "IP: %s\n", ip_srvdns);
+
+    p->dserv = (struct sockaddr *) &srv_addr;
 
     if ((fpin = fopen(p->nom_fichero_consultas, "r")) == NULL)
     {
-        perror("Error: No se pudo abrir el fichero de consultas");
+        perror("No se pudo abrir el fichero de consultas\n");
         pthread_exit(NULL);
     }
     if ((fpout = fopen(hilos_file_names[p->id], "w")) == NULL)
     {
         fclose(fpin); // cerramos el handler del fichero de consultas
-        perror("Error: No se pudo abrir el fichero de resultados");
+        perror("No se pudo abrir el fichero de resultados\n");
         pthread_exit(NULL);
     }
     do
@@ -164,6 +174,7 @@ void *hilo_lector(datos_hilo *p)
                 // Enviar el mensaje leído del fichero a través de un socket TCP
                 // y leer la respuesta del servidor
                 // A RELLENAR
+
                 sock_dat = socket(AF_INET, SOCK_STREAM, 0);
                 if (sock_dat < 0)
                 {
@@ -219,6 +230,7 @@ void *hilo_lector(datos_hilo *p)
                 // A RELLENAR
                 // Enviar el mensaje leído del fichero a través de un socket UDP
                 // y leer la respuesta del servidor
+                perror ("Es UDP");
                 sock_dat = socket(AF_INET, SOCK_DGRAM, 0);
                 if (sock_dat < 0)
                 {
