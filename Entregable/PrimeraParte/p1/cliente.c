@@ -107,7 +107,7 @@ void procesa_argumentos(int argc, char *argv[])
         perror("Es udp");
         es_stream = FALSO;
     }
-    else if (strcmp(argv[3], "t") == 1 && strcmp(argv[3], "u") == 1) 
+    else if (strcmp(argv[3], "t") != 0 && strcmp(argv[3], "u") != 0) 
     {
         perror("Protocolo invalido.\n\tt - TCP\n\tu - UDP\n");
         exit(EXIT_FAILURE);

@@ -398,7 +398,6 @@ void *Worker(int *id)
             // Enviar respuesta al cliente
             if (es_stream == CIERTO) // TCP
             {
-                perror("Sonda 4: Enviamos respuesta TCP");
                 send(pet->s, msg, strlen(msg), 0);
             }
             else // UDP
