@@ -214,13 +214,6 @@ void *hilo_lector(datos_hilo *p)
                     close(sock_dat);
                     pthread_exit(NULL);
                 }
-
-                // Escribimos la respuesta en el fichero de salida
-                respuesta[recibidos] = '\0'; // Añadimos el carácter nulo al final de la respuesta
-                fprintf(fpout, "%s\n", respuesta);
-
-                // Cerramos la conexión
-                close(sock_dat);
             }
             else
             {
@@ -229,7 +222,6 @@ void *hilo_lector(datos_hilo *p)
                 // A RELLENAR
                 // Enviar el mensaje leído del fichero a través de un socket UDP
                 // y leer la respuesta del servidor
-                perror ("Es UDP");
                 sock_dat = socket(AF_INET, SOCK_DGRAM, 0);
                 if (sock_dat < 0)
                 {
@@ -260,15 +252,15 @@ void *hilo_lector(datos_hilo *p)
                     close(sock_dat);
                     pthread_exit(NULL);
                 }
-
-                // Escribimos la respuesta en el fichero de salida
-                respuesta[recibidos] = '\0'; // Añadimos el carácter nulo al final de la respuesta
-                fprintf(fpout, "%s\n\n", respuesta);
             }
             close(sock_dat);
             // Volcar la petición y la respuesta, separadas por ":" en
             // el fichero de resultados
             // A RELLENAR
+            respuesta[recibidos] = 0; // Añadimos el carácter nulo al final de la respuesta
+            respuesta[strlen(respuesta) - 1] = 0;
+            buffer[recibidos] = 0;          // Añadir el terminador de cadena
+            buffer[strlen(buffer) - 1] = 0; // Quitar el retorno de carro
             fprintf(fpout, "%s:%s\n", buffer, respuesta);
         }
     }while (s);

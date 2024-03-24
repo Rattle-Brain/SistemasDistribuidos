@@ -347,7 +347,7 @@ void *Worker(int *id)
             // apropiada en el fichero de log, y enviar la respuesta al cliente
 
             // Recopilando los datos para el log. Primero la IP y puerto del cliente
-            inet_ntop(AF_INET, &(pet->d_cliente.sin_addr), ip_cliente, sizeof(ip_cliente));
+            inet_ntop(AF_INET, &(pet->d_cliente.sin_addr.s_addr), ip_cliente, sizeof(ip_cliente));
             puerto_cliente = ntohs(pet->d_cliente.sin_port);
             
             // Después la fecha y hora
@@ -359,7 +359,7 @@ void *Worker(int *id)
             // A RELLENAR
 
             pthread_mutex_lock(&mfsal);
-            fprintf(fpsal, "%s,%s,%s,%s,%s,%s,%s\n", ip_cliente, &puerto_cliente,
+            fprintf(fpsal, "%s,%d,%s,%s,%s,%s,%s\n", ip_cliente, puerto_cliente,
                         fechahora, dombuscado, recordbuscado, clavebusqueda, valorrecord);
 
             pthread_mutex_unlock(&mfsal);
@@ -469,7 +469,10 @@ void *AtencionPeticiones(param_hilo_aten *q)
         // A RELLENAR
         
         //Copiamos los datos que faltan
-        p->s = sock_dat;
+        if(es_stream)
+            p->s = sock_dat;
+        else
+            p->s = s;
         p->d_cliente = d_cliente;
 
         // Insertamos el dato en la cola
