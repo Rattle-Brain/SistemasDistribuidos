@@ -201,7 +201,6 @@ void procesa_mensaje_recibido(char *msg, char **dominio,
     *dominio = strdup(token);
     token = strtok_r(NULL, ", \n", &loc);
     *record = strdup(token);
-
     if ((strcmp(*record, "NS") == 0) || (strcmp(*record, "MX") == 0))
     {
         // Se busca un registro de tipo NS o MX
@@ -289,26 +288,7 @@ void *Worker(int *id)
             // Separar el mensaje en sus constituyentes, con ayuda de la función
             // procesa_mensaje_recibido()
             // A RELLENAR
-            
-            // Separar el mensaje en sus constituyentes, con ayuda de la función
-            // procesa_mensaje_recibido()
-            procesa_mensaje_recibido(valorrecord, &domleido, &recordleido, claveleida);
-
-            // Comparar el dominio leido con el recibido en la consulta DNS
-            if (strcmp(domleido, dombuscado) == 0 && strcmp(recordleido, recordbuscado) == 0)
-            {
-                if (primera)
-                {
-                    // Construir la cadena de respuesta al cliente
-                    sprintf(msg, "%s %s %s", dombuscado, recordbuscado, claveleida);
-                    primera = FALSO;
-                }
-                else
-                {
-                    // Concatenar a la cadena de respuesta el valor del registro
-                    strcat(msg, claveleida);
-                }
-            }
+            procesa_mensaje_recibido(pet->msg, &dombuscado, &recordbuscado, clavebusqueda);
 
             primera = CIERTO;
             bzero(msg, TAMMSG);
@@ -453,15 +433,12 @@ void *AtencionPeticiones(param_hilo_aten *q)
             // A RELLENAR
 
             // Aceptamos la conexion
-
-            fprintf(stderr, "Antes del accept. Socket %d\n", s);
             sock_dat = accept(s, 0, 0);
             if (sock_dat < 0)
             {
                 perror("Error al aceptar la conexion\n");
                 exit(EXIT_FAILURE);
             }
-            perror("Despues del accept");
 
 
             // Recibimos el mensaje del cliente
@@ -564,7 +541,6 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    perror("Sonda 1: Bind hecho");
 
     // Establecer el socket en modo de escucha si es TCP
     if (es_stream)
@@ -574,7 +550,6 @@ int main(int argc, char *argv[])
             perror("Error al poner el socket en modo de escucha\n");
             exit(EXIT_FAILURE);
         }
-        perror("Sonda2: TCP puesto en escucha");
     }
 
     // creamos el espacio para los objetos de datos de hilo
@@ -594,8 +569,6 @@ int main(int argc, char *argv[])
     // inicializamos la cola
     inicializar_cola(&cola_peticiones, tam_cola);
 
-    perror("Sonda 3: Cola inicializada");
-
     // Inicializamos los mutex de exclusión al fichero de log
     pthread_mutex_init(&mfsal, NULL);
 
@@ -611,7 +584,6 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
-        fprintf(stderr, "Asignacion del socket al hilo. Socket %d\n", sock);
         q->s = sock;
         q->num_hilo = i;
         
