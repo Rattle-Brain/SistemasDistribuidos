@@ -54,10 +54,6 @@ void destruir_cola(Cola *cola)
     }
 
     // Liberar la memoria apuntada por cada puntero guardado en la cola
-    for (int i = 0; i < cola->tam_cola; i++)
-    {
-        free(cola->datos[i]); // Liberar la memoria de cada elemento
-    }
     free(cola->datos); // Liberar la memoria del array de punteros
 
 
