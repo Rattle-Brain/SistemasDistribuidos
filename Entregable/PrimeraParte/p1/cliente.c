@@ -104,7 +104,6 @@ void procesa_argumentos(int argc, char *argv[])
     // Comprobamos el protocolo
     if(strcmp(argv[3], "u") == 0)
     {
-        perror("Es udp");
         es_stream = FALSO;
     }
     else if (strcmp(argv[3], "t") != 0 && strcmp(argv[3], "u") != 0) 
