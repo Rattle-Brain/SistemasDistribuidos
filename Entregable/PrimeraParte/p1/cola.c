@@ -60,6 +60,7 @@ void destruir_cola(Cola *cola)
     }
     free(cola->datos); // Liberar la memoria del array de punteros
 
+
     // Destruir los mutex y semáforos
     pthread_mutex_destroy(&cola->mutex_head);
     pthread_mutex_destroy(&cola->mutex_tail);
