@@ -263,7 +263,7 @@ void *hilo_lector(datos_hilo *p)
 
                 // Escribimos la respuesta en el fichero de salida
                 respuesta[recibidos] = '\0'; // Añadimos el carácter nulo al final de la respuesta
-                fprintf(fpout, "%s\n", respuesta);
+                fprintf(fpout, "%s\n\n", respuesta);
             }
             close(sock_dat);
             // Volcar la petición y la respuesta, separadas por ":" en
