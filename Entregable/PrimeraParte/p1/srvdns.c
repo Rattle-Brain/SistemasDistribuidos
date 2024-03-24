@@ -358,22 +358,11 @@ void *Worker(int *id)
             // Escribimos la línea en el fichero de log (con exclusión mutua entre workers)
             // A RELLENAR
 
-            // Append al fichero fpsal. "a+" indica que si no existe se crea uno nuevo.
-            fpsal = fopen(fpsal_nombre, "a+");
-            if (fpsal == NULL)
-            {
-                perror("Error al abrir el archivo de registro\n");
-                exit(EXIT_FAILURE);
-            }
-
             pthread_mutex_lock(&mfsal);
             fprintf(fpsal, "%s,%s,%s,%s,%s,%s,%s\n", ip_cliente, &puerto_cliente,
-                        fechahora, dombuscado, recordbuscado, clavebusqueda, msg);
+                        fechahora, dombuscado, recordbuscado, clavebusqueda, valorrecord);
 
             pthread_mutex_unlock(&mfsal);
-
-            // Cerramos el fichero
-            fclose(fpsal);
 
             // Enviar respuesta al cliente
             if (es_stream == CIERTO) // TCP
@@ -504,6 +493,14 @@ int main(int argc, char *argv[])
     param_hilo_aten *q;  // Para crear los parámetros de los hilos de atención
 
     procesa_argumentos(argc, argv);
+
+    // Append al fichero fpsal. "a+" indica que si no existe se crea uno nuevo.
+    fpsal = fopen(fpsal_nombre, "a+");
+    if (fpsal == NULL)
+    {
+        perror("Error al abrir el archivo de registro\n");
+        exit(EXIT_FAILURE);
+    }
 
     setbuf(stdout, NULL); // quitamos el buffer de la salida estandar
     signal(SIGINT, handler); // establecemos el comportamiento ante la llegada asíncrona de la señal
