@@ -317,7 +317,7 @@ int main(int argc, char *argv[])
     // A RELLENAR
     d_serv.sin_family = AF_INET;
     d_serv.sin_port = htons(puerto_srvdns);
-    inet_aton(ip_srvdns, &d_serv.sin_addr);
+    d_serv.sin_addr.s_addr = inet_addr(ip_srvdns);
 
     for (i = 0; i < nhilos; i++)
     {
