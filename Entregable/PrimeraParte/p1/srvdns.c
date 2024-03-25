@@ -77,7 +77,6 @@ FILE *fpsal = NULL;
 char * fpsal_nombre;
 
 
-
 // ====================================================================
 // FUNCION handler de las señales recibidas por el proceso
 // ====================================================================
@@ -112,6 +111,7 @@ void procesa_argumentos(int argc, char *argv[])
     // Verificación de los argumentos e inicialización de las correspondientes variables globales.
     // Puedes usar las funciones en util.h
 
+    // A RELLENAR
     // Comprobamos el protocolo
     if(strcmp(argv[1], "u") == 0)
     {
@@ -201,6 +201,7 @@ void procesa_mensaje_recibido(char *msg, char **dominio,
     *dominio = strdup(token);
     token = strtok_r(NULL, ", \n", &loc);
     *record = strdup(token);
+
     if ((strcmp(*record, "NS") == 0) || (strcmp(*record, "MX") == 0))
     {
         // Se busca un registro de tipo NS o MX
@@ -255,6 +256,7 @@ void *Worker(int *id)
     char *fechahora = NULL;             // para escribirla en el log
     unsigned char puerto_cliente;       // puerto del cliente para el log
     char msg[TAMMSG];                   // mensaje de respuesta al cliente
+
 
     id_worker = *id;
 
@@ -357,20 +359,20 @@ void *Worker(int *id)
 
             // Escribimos la línea en el fichero de log (con exclusión mutua entre workers)
             // A RELLENAR
-
             pthread_mutex_lock(&mfsal);
             fprintf(fpsal, "%s,%d,%s,%s,%s,%s,%s\n", ip_cliente, puerto_cliente,
                         fechahora, dombuscado, recordbuscado, clavebusqueda, valorrecord);
-
             pthread_mutex_unlock(&mfsal);
 
             // Enviar respuesta al cliente
-            if (es_stream == CIERTO) // TCP
+            if (es_stream)
             {
+                // A RELLENAR
                 send(pet->s, msg, strlen(msg), 0);
             }
-            else // UDP
+            else
             {
+                // A RELLENAR
                 sendto(pet->s, msg, strlen(msg), 0, (struct sockaddr *)&(pet->d_cliente), sizeof(pet->d_cliente));
             }
             
@@ -598,18 +600,10 @@ int main(int argc, char *argv[])
     for (i = 0; i < num_hilos_work; i++)
     {
         id = (int *)malloc(sizeof(int));
-        if (id == NULL)
-        {
-            perror("Error al asignar memoria para el parámetro del hilo work\n");
-            exit(EXIT_FAILURE);
-        }
         *id = i;
-        if(pthread_create(&hilos_work[i], NULL, (void *)Worker, (void *)id))
-        {
-            perror("Error al crear el hilo work\n");
-            exit(EXIT_FAILURE);
-        }
+        pthread_create(&hilos_work[i], NULL, (void *)Worker, (void *)id);
     }
+
 
     // Esperar a que terminen todos los hilos (espera infinita en realidad
     // pues los hilos no terminan nunca, salvo que se reciba una señal)

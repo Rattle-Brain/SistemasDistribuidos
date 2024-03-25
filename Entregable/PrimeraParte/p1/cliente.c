@@ -59,7 +59,7 @@ char *hilos_file_names[MAXHILOSCLIENTE] = {
 
 void procesa_argumentos(int argc, char *argv[])
 {
-    if (argc != 6)
+    if (argc < 6)
     {
         fprintf(stderr, "Forma de uso: %s ip_srvdns puerto_srvdns {t|u} nhilos fich_consultas\n", argv[0]);
         exit(1);
@@ -141,24 +141,15 @@ void *hilo_lector(datos_hilo *p)
     FILE *fpin;
     FILE *fpout;
 
-    // declaramos las variables para el socket
-    struct sockaddr_in srv_addr;
-    srv_addr.sin_family = AF_INET;
-    srv_addr.sin_port = htons(puerto_srvdns);
-    inet_aton(ip_srvdns, &srv_addr.sin_addr);
-    fprintf(stderr, "IP: %s\n", ip_srvdns);
-
-    p->dserv = (struct sockaddr *) &srv_addr;
-
     if ((fpin = fopen(p->nom_fichero_consultas, "r")) == NULL)
     {
-        perror("No se pudo abrir el fichero de consultas\n");
+        perror("Error: No se pudo abrir el fichero de consultas");
         pthread_exit(NULL);
     }
     if ((fpout = fopen(hilos_file_names[p->id], "w")) == NULL)
     {
         fclose(fpin); // cerramos el handler del fichero de consultas
-        perror("No se pudo abrir el fichero de resultados\n");
+        perror("Error: No se pudo abrir el fichero de resultados");
         pthread_exit(NULL);
     }
     do
@@ -174,7 +165,23 @@ void *hilo_lector(datos_hilo *p)
                 // y leer la respuesta del servidor
                 // A RELLENAR
 
-                sock_dat = socket(AF_INET, SOCK_STREAM, 0);
+                /**
+                    Por alguna razón, si aqui utilizo p->dserv en lugar de crear un struct sockaddr_in nuevo, me da un error
+                    en la funcion CONNECT:
+                        Error al conectar al servidor TCP: Address family not supported by protocol
+                    
+                    Sin embargo, cuando utilizo este sockaddr_in creado aquí funciona bien. En UDP no tengo este problema y 
+                    si que puedo utilizar p->dserv sin problemas. No tengo idea de por que.
+
+                    No obstante, y como no fui capaz de resolver el probelma, 
+                    para que el programa funcione decidi dejar un socket creado aqui.
+                */
+                struct sockaddr_in srv_addr;
+                srv_addr.sin_family = AF_INET;
+                srv_addr.sin_port = htons(puerto_srvdns);
+                srv_addr.sin_addr.s_addr = inet_addr(ip_srvdns);
+
+                sock_dat = socket(PF_INET, SOCK_STREAM, 0);
                 if (sock_dat < 0)
                 {
                     perror("Error al crear el socket TCP");
@@ -184,7 +191,7 @@ void *hilo_lector(datos_hilo *p)
                 }
 
                 // Conectar al servidor
-                if (connect(sock_dat, (struct sockaddr *)&srv_addr, sizeof(srv_addr)) < 0)
+                if (connect(sock_dat, (struct sockaddr * )&srv_addr, sizeof(srv_addr)) < 0)
                 {
                     perror("Error al conectar al servidor TCP");
                     fclose(fpin);
@@ -220,9 +227,10 @@ void *hilo_lector(datos_hilo *p)
                 // Enviar el mensaje leído del fichero a través de un socket UDP
                 // y leer la respuesta del servidor
                 // A RELLENAR
+                
                 // Enviar el mensaje leído del fichero a través de un socket UDP
                 // y leer la respuesta del servidor
-                sock_dat = socket(AF_INET, SOCK_DGRAM, 0);
+                sock_dat = socket(PF_INET, SOCK_DGRAM, 0);
                 if (sock_dat < 0)
                 {
                     perror("Error al crear el socket UDP");
@@ -232,7 +240,7 @@ void *hilo_lector(datos_hilo *p)
                 }
 
                 // Enviamos la consulta al servidor
-                enviados = sendto(sock_dat, buffer, strlen(buffer), 0, (struct sockaddr *)&srv_addr, sizeof(srv_addr));
+                enviados = sendto(sock_dat, buffer, strlen(buffer), 0, (struct sockaddr *)(p->dserv), sizeof(*p->dserv));
                 if (enviados < 0)
                 {
                     perror("Error al enviar el mensaje UDP al servidor");
@@ -257,17 +265,20 @@ void *hilo_lector(datos_hilo *p)
             // Volcar la petición y la respuesta, separadas por ":" en
             // el fichero de resultados
             // A RELLENAR
-            respuesta[recibidos] = 0; // Añadimos el carácter nulo al final de la respuesta
-            respuesta[strlen(respuesta) - 1] = 0;
-            buffer[recibidos] = 0;          // Añadir el terminador de cadena
-            buffer[strlen(buffer) - 1] = 0; // Quitar el retorno de carro
+
+            // Añadimos el carácter nulo al final de la respuesta
+            respuesta[recibidos] = 0;
+            respuesta[strlen(respuesta) - 1] = 0; // Quitar el retorno de carro
+
+            // Añadir el terminador de cadena
+            buffer[recibidos] = 0;          
+            buffer[strlen(buffer) - 1] = 0; 
             fprintf(fpout, "%s:%s\n", buffer, respuesta);
         }
-    }while (s);
+    } while (s);
     // Terminado el hilo, liberamos la memoria del puntero y cerramos ficheros
     fclose(fpin);
     fclose(fpout);
-    close(sock_dat);
     free(p);
     return NULL;
 }
@@ -305,18 +316,20 @@ int main(int argc, char *argv[])
     // Inicializar la estructura de dirección del servidor que se pasará a los hilos
     // A RELLENAR
     d_serv.sin_family = AF_INET;
-    d_serv.sin_addr.s_addr = inet_addr(ip_srvdns);
     d_serv.sin_port = htons(puerto_srvdns);
+    inet_aton(ip_srvdns, &d_serv.sin_addr);
 
     for (i = 0; i < nhilos; i++)
     {
         // Preparar el puntero con los parámetros a pasar al hilo
+        // A RELLENAR
         q = (datos_hilo*)malloc(sizeof(datos_hilo));
         q->id = i;
         q->nom_fichero_consultas = fich_consultas;
         q->dserv = (struct sockaddr *)&d_serv;
 
         // Crear el hilo
+        // A RELLENAR
         if (pthread_create(&th[i], NULL, (void*)hilo_lector, (void*)q) != 0)
         {
             fprintf(stderr, "No se pudo crear el hilo lector %d\n", i);
