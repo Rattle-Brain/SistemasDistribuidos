@@ -246,7 +246,6 @@ void *hilo_lector(datos_hilo *p)
                     perror("Error al enviar el mensaje UDP al servidor");
                     fclose(fpin);
                     fclose(fpout);
-                    close(sock_dat);
                     pthread_exit(NULL);
                 }
 
@@ -257,7 +256,6 @@ void *hilo_lector(datos_hilo *p)
                     perror("Error al recibir la respuesta UDP del servidor");
                     fclose(fpin);
                     fclose(fpout);
-                    close(sock_dat);
                     pthread_exit(NULL);
                 }
             }
