@@ -111,7 +111,7 @@ void *Cliente(datos_hilo *p)
         exit(10);
     }
     // y el fichero de consultas
-    if ((fpin = fopen(p->nom_fichero_consultas, "w")) < 0)// A RELLENAR
+    if ((fpin = fopen(p->nom_fichero_consultas, "r")) < 0)// A RELLENAR
     {
         fprintf(stderr, "Error: cliente %d no pudo abrir el fichero de entrada %s\n", id_cliente, p->nom_fichero_consultas);
         exit(11);
@@ -137,8 +137,7 @@ void *Cliente(datos_hilo *p)
             // Extraer los campos de la línea leída para dejarlos en los
             // campos de la estructura paramconsulta
             // A RELLENAR
-            |
-            |
+            obtener_campos_consulta(p->id_cliente, msg, &q.nomdominio, &q.tiporecord, &q.clave);
 
             // Invocación remota del servicio consulta_record, protegiendo la llamada con un mutex
             // para evitar que dos hilos hagan la RPC a la vez
@@ -154,13 +153,10 @@ void *Cliente(datos_hilo *p)
                 // Volcar a fpsal el dominio consultado, el tipo de record, la clave (solo
                 // si la consulta no fue tipo MX o NS) y el resultado recibido
                 // A RELLENAR
-                |
-                |
-                |
-                |
-                |
-                |
-                |
+                if(es_MX_o_NS(q.tiporecord) == CIERTO)
+                {
+                    fprintf(fpsal, "%s, %s, %s\n\tResultado: %s\n", q.nomdominio, q.tiporecord, q.clave, res->Resultado_u.msg);
+                }
                 break;
             case 2:
                 sprintf(msg, "Error: Cliente %d Resultado invocacion remota: %s\n", id_cliente, res->Resultado_u.err);
@@ -272,7 +268,7 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
         q->id_cliente = i;
-        q->nom_fichero_consultas = hilos_file_names[i];
+        q->nom_fichero_consultas = argv[3];
 
         if (pthread_create(&th[i], NULL, (void*)Cliente, (void *)q) != 0) {
             perror("Error al crear hilo de cliente");
