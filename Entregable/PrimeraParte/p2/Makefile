@@ -11,8 +11,8 @@
 
 CC=gcc
 RPCGEN=rpcgen
-CFLAGS= -I. -Wall -ggdb
-LDFLAGS= -pthread
+CFLAGS= -I. -Wall -ggdb -I/usr/include/tirpc
+LDFLAGS= -pthread -ltirpc
 CLIENTE = cliente
 ESTADIS = estadis
 SERVIDOR= servidor
@@ -25,16 +25,16 @@ todo : $(CLIENTE) $(SERVIDOR) $(INICIALIZADOR) $(ESTADIS)
 #**************************************************
 
 $(CLIENTE) : cliente.o srvdns_clnt.o srvdns_xdr.o util.o
-	$(CC) $(CFLAGS) -o $(CLIENTE) $(LDFLAGS) cliente.o srvdns_clnt.o srvdns_xdr.o util.o
+	$(CC) -o $(CLIENTE) cliente.o srvdns_clnt.o srvdns_xdr.o util.o $(LDFLAGS)
 
 $(ESTADIS) : estadis.o srvdns_clnt.o srvdns_xdr.o util.o
-	$(CC) $(CFLAGS) -o $(ESTADIS) $(LDFLAGS) estadis.o srvdns_clnt.o srvdns_xdr.o util.o
+	$(CC) -o $(ESTADIS) estadis.o srvdns_clnt.o srvdns_xdr.o util.o $(LDFLAGS)
 
 $(INICIALIZADOR) : inicializador_srvdns.o srvdns_clnt.o srvdns_xdr.o util.o
-	$(CC) $(CFLAGS) -o $(INICIALIZADOR) $(LDFLAGS) inicializador_srvdns.o srvdns_clnt.o srvdns_xdr.o util.o
+	$(CC) -o $(INICIALIZADOR) inicializador_srvdns.o srvdns_clnt.o srvdns_xdr.o util.o $(LDFLAGS)
 
 $(SERVIDOR) : srvdns_svc.o srvdns_xdr.o util.o servicios.o
-	$(CC) $(CFLAGS) -o $(SERVIDOR) srvdns_svc.o srvdns_xdr.o util.o servicios.o
+	$(CC) -o $(SERVIDOR) srvdns_svc.o srvdns_xdr.o util.o servicios.o $(LDFLAGS)
 
 srvdns_svc.o : srvdns_svc.c srvdns.h
 	$(CC) $(CFLAGS) -c srvdns_svc.c 
