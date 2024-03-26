@@ -145,13 +145,22 @@ char *obtener_dato_en_posicion(int n, Lista *p)
     char *cad = NULL;
 
     // A RELLENAR
-    |
-    |
-    |
-    |
-    |
-    |
+    int i = 0; // Contador
+    Lista *actual = p;
     
+    while (actual != NULL && i < n)
+    {
+        actual = actual->siguiente;
+        i++;
+    }
+    
+    // Si llegamos a la posición deseada o si hemos alcanzado el final de la lista
+    if (i == n && actual != NULL)
+    {
+        cad = strdup(actual->dato);
+    }
+    
+    // Si no encuentra nada => return NULL
     return (cad);
 }
 
@@ -163,12 +172,21 @@ int posicion_en_lista(char *cad, Lista *p)
     int pos = NOENCONTRADO;
 
     // A RELLENAR
-    |
-    |
-    |
-    |
-    |
-    |
-    
-    return (pos);
+    int i = 0;
+    Lista *actual = p;
+    while (actual != NULL)
+    {
+        // Comparamos la cadena del nodo actual con la cadena dada
+        if (strcmp(actual->dato, cad) == 0)
+        {
+            pos = i;
+            break;
+        }
+
+        // Avanzamos al siguiente nodo y aumentamos la posición
+        actual = actual->siguiente;
+        i++;
+    }
+
+    return pos;
 }
