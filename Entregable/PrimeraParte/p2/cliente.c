@@ -104,13 +104,13 @@ void *Cliente(datos_hilo *p)
     id_cliente = p->id_cliente; // Capturar el id del cliente en una variable local
 
     // Intentar abrir el fichero de salida (cuyo nombre depende del id del cliente)
-    if ---------------------- // A RELLENAR
+    if ((fpsal = fopen(hilos_file_names[id_cliente], "w")) < 0) // A RELLENAR
     {
         fprintf(stderr, "Error: cliente %d no pudo abrir el fichero de salida %s\n", id_cliente, hilos_file_names[id_cliente]);
         exit(10);
     }
     // y el fichero de consultas
-    if ---------------------- // A RELLENAR
+    if ((fpin = fopen(p->nom_fichero_consultas, "w")) < 0)// A RELLENAR
     {
         fprintf(stderr, "Error: cliente %d no pudo abrir el fichero de entrada %s\n", id_cliente, p->nom_fichero_consultas);
         exit(11);
@@ -121,12 +121,12 @@ void *Cliente(datos_hilo *p)
     {
         // Inicializar la estructura CLIENT (controlando posibles errores)
         // A RELLENAR
-        |
-        |
-        |
-        |
-        |
-        |
+        cl = clnt_create(ip_srv, SRVDNS, PRIMERA, "tcp");
+
+        if (cl == NULL) {
+            fprintf(stderr, "Error: cliente %d no pudo crear la estructura CLIENT\n", id_cliente);
+            exit(12);
+        }
 
         // Leer una línea del fichero de consultas
         bzero(buffer, TAMLINEA);
