@@ -3,6 +3,7 @@
   servidor de DNS
 */
 #include <rpc/rpc.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/times.h>
 #include <unistd.h>
@@ -142,9 +143,9 @@ void *Cliente(datos_hilo *p)
             // Invocación remota del servicio consulta_record, protegiendo la llamada con un mutex
             // para evitar que dos hilos hagan la RPC a la vez
             // A RELLENAR
-            |
-            |
-            |
+            pthread_mutex_lock(&m);
+            res = consulta_record_1(&q, cl);
+            pthread_mutex_unlock(&m);
 
             // Procesar la respuesta recibida, según el caso de la unión
             switch (res->caso)
@@ -206,14 +207,30 @@ int main(int argc, char *argv[])
 
     // Valida cada argumento y lo asigna a la variable apropiada
     // A RELLENAR
-    |
-    |
-    |
-    |
-    |
-    |
-    |
-    |
+
+    // Comprobamos el numero de hilos CLIENTE
+    if(valida_numero(argv[1]) && atoi(argv[1]) <= MAXHILOSCLIENTE && atoi(argv[1]) >= 1)
+    {
+        num_clientes = atoi(argv[5]);
+    }
+    else 
+    {
+        fprintf(stderr, "Numero de hilos Cliente no valido. MAX %d\n", MAXHILOSCLIENTE);
+        exit(EXIT_FAILURE);
+    }
+
+    // Comprobamos la validez de la direccion IP
+    char * ip_serv_dup = strdup(argv[2]);
+
+    if(valida_ip(ip_serv_dup))
+    {
+        ip_srv = argv[2];
+    }
+    else 
+    {
+        perror("IP no válida. Formato XXX.XXX.XXX.XXX donde XXX = [0-255].\n");
+        exit(EXIT_FAILURE);
+    }
 
 
     // Intenta abrir el fichero por si hubiera problemas abortar (aunque main
@@ -249,18 +266,18 @@ int main(int argc, char *argv[])
     for (i = 0; i < num_clientes; i++)
     {
         // A RELLENAR
-        |
-        |
-        |
-        |
-        |
-        |
-        |
-        |
-        |
-        |
-        |
-        |
+        q = (datos_hilo *)malloc(sizeof(datos_hilo));
+        if (q == NULL) {
+            perror("Error al asignar memoria para datos_hilo");
+            exit(EXIT_FAILURE);
+        }
+        q->id_cliente = i;
+        q->nom_fichero_consultas = hilos_file_names[i];
+
+        if (pthread_create(&th[i], NULL, (void*)Cliente, (void *)q) != 0) {
+            perror("Error al crear hilo de cliente");
+            exit(EXIT_FAILURE);
+        }
     }
 
     // Esperar a que terminen los hilos Cliente
