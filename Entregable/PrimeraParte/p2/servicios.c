@@ -174,7 +174,9 @@ Resultado *consulta_record_1_svc(paramconsulta *q, struct svc_req *peticion)
             valorrecord = strdup(token);
         }
         // Si coinciden los tres campos con los de la consulta...
-        if ------------------------------------------- // A RELLENAR
+        if (strcmp(domleido, q->nomdominio) == 0 && 
+            strcmp(recordleido, q->tiporecord) == 0 && 
+            strcmp(claveleida, q->clave) == 0) // A RELLENAR
         {
             // hemos encontrado un valor para responder a la consulta
             // vamos añadiéndolo a la respuesta
@@ -194,10 +196,10 @@ Resultado *consulta_record_1_svc(paramconsulta *q, struct svc_req *peticion)
 
             // Si el registro buscado no es NS o MX dejamos de buscar
             // A RELLENAR
-            |
-            |
-            |
-            |
+            if (es_MX_o_NS(recordleido) == FALSO)
+            {
+                break;
+            }
         }
     }
     fclose(fp);
@@ -372,15 +374,25 @@ Resultado *obtener_nombre_record_1_svc(int *n, struct svc_req *peticion)
 {
     // Retorna el nombre de tipo de registro asociado a un índice dado
     // A RELLENAR
-    |
-    |
-    |
-    |
-    |
-    |
-    |
-    |
-    |
+    static Resultado res;
 
+    if ((*n < 0) || (*n > (numdominios - 1)))
+    {
+        res.caso = 2;
+        res.Resultado_u.err = "ERROR en el numero de record";
+    }
+    else
+    {
+        res.Resultado_u.msg = obtener_nombre_record_1_svc(*n, peticion);
+        if (res.Resultado_u.msg == NULL)
+        {
+            res.caso = 2;
+            res.Resultado_u.err = "ERROR en el numero de record";
+        }
+        else
+        {
+            res.caso = 0;
+        }
+    }
     return (&res);
 }
