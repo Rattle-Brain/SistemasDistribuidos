@@ -27,8 +27,8 @@ todo : $(CLIENTE) $(SERVIDOR) $(INICIALIZADOR) $(ESTADIS)
 $(CLIENTE) : cliente.o srvdns_clnt.o srvdns_xdr.o util.o
 	$(CC) -o $(CLIENTE) cliente.o srvdns_clnt.o srvdns_xdr.o util.o $(LDFLAGS)
 
-$(ESTADIS) : estadis.o srvdns_clnt.o srvdns_xdr.o util.o
-	$(CC) -o $(ESTADIS) estadis.o srvdns_clnt.o srvdns_xdr.o util.o $(LDFLAGS)
+#$(ESTADIS) : estadis.o srvdns_clnt.o srvdns_xdr.o util.o
+#	$(CC) -o $(ESTADIS) estadis.o srvdns_clnt.o srvdns_xdr.o util.o $(LDFLAGS)
 
 $(INICIALIZADOR) : inicializador_srvdns.o srvdns_clnt.o srvdns_xdr.o util.o
 	$(CC) -o $(INICIALIZADOR) inicializador_srvdns.o srvdns_clnt.o srvdns_xdr.o util.o $(LDFLAGS)
@@ -51,8 +51,8 @@ srvdns_xdr.o : srvdns_xdr.c srvdns.h
 cliente.o : cliente.c srvdns.h util.h 
 	$(CC) $(CFLAGS) -c cliente.c
 
-estadis.o : estadis.c srvdns.h util.h 
-	$(CC) $(CFLAGS) -c estadis.c
+#estadis.o : estadis.c srvdns.h util.h 
+#	$(CC) $(CFLAGS) -c estadis.c
 
 inicializador_srvdns.o : inicializador_srvdns.c util.h srvdns.h
 	$(CC) $(CFLAGS) -c inicializador_srvdns.c 
@@ -74,4 +74,4 @@ cleanall: limpia
 	rm -f srvdns_*
 	rm -f srvdns.h
 	rm -f sal*.dat
-	rm -f cliente servidor inicializador_srvdns estadis
+	rm -f cliente servidor inicializador_srvdns

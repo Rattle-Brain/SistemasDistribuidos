@@ -122,7 +122,7 @@ void *Cliente(datos_hilo *p)
     {
         // Inicializar la estructura CLIENT (controlando posibles errores)
         // A RELLENAR
-        cl = clnt_create(ip_srv, SRVDNS, PRIMERA, "tcp");
+        cl = clnt_create(ip_srv, SRVDNS, PRIMERA, "udp");
 
         if (cl == NULL) {
             fprintf(stderr, "Error: cliente %d no pudo crear la estructura CLIENT\n", id_cliente);
@@ -137,7 +137,7 @@ void *Cliente(datos_hilo *p)
             // Extraer los campos de la línea leída para dejarlos en los
             // campos de la estructura paramconsulta
             // A RELLENAR
-            obtener_campos_consulta(p->id_cliente, msg, &q.nomdominio, &q.tiporecord, &q.clave);
+            obtener_campos_consulta(id_cliente, msg, &q.nomdominio, &q.tiporecord, &q.clave);
 
             // Invocación remota del servicio consulta_record, protegiendo la llamada con un mutex
             // para evitar que dos hilos hagan la RPC a la vez

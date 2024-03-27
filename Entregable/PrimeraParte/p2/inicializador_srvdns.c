@@ -44,12 +44,14 @@ int main(int argc, char *argv[])
 
     // Inicializar la estructura CLIENT para las llamadas a procedimientos remotos
     // A RELLENAR
-    cl = clnt_create(ip_srvdns, SRVDNS, PRIMERA, "tcp");
+    fprintf(stderr, "IP: %s\n", ip_srvdns);
+    cl = clnt_create(ip_srvdns, SRVDNS, PRIMERA, "udp");
 
     if (cl == NULL) {
-        fprintf(stderr, "Problema inicializando la estructura CLIENTE\n");
+        perror("Problema inicializando la estructura CLIENTE");
         exit(EXIT_FAILURE);
     }
+    
 
     // Inicializar la estructura dat con las listas de dominios y tipos de registros
     dat.nomdominios = obtener_lista_dominios(argv[2]);

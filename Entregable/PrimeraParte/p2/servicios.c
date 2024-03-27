@@ -209,10 +209,17 @@ Resultado *consulta_record_1_svc(paramconsulta *q, struct svc_req *peticion)
     // buscarlos en las listas de nombres de dominios y de tipos de registros
     // con ayuda de la función posicion_en_lista
     // A RELLENAR
-    |
-    |
-    |
-    |
+    // Encontrar la fila correspondiente al nombre de dominio en la lista de nombres de dominios
+    fila = posicion_en_lista(q->nomdominio, lnomdominios);
+
+    // Encontrar la columna correspondiente al tipo de registro en la lista de tipos de registros
+    columna = posicion_en_lista(q->tiporecord, lnomtiposrec);
+
+    // Verificar si se encontraron la fila y la columna
+    if ((int)fila != NOENCONTRADO && (int)columna != NOENCONTRADO) {
+        // Actualizar el elemento en la matriz de contadores
+        contabilidad_consultas[fila][columna]++;
+    }
 
 
     // Añadir la consulta al fichero de log
@@ -256,12 +263,13 @@ Resultado *obtener_total_dominio_1_svc(int *ndxdom, struct svc_req *peticion)
     else
     {
         // A RELLENAR
-        |
-        |
-        |
-        |
-        |
-        |
+        int totalConsultas = 0;
+        for (i = 0; i < numtiposrec; i++)
+        {
+            totalConsultas += contabilidad_consultas[*ndxdom][i];
+        }
+        res.caso = 1;
+        res.Resultado_u.val = totalConsultas;
     }
     return (&res);
 }
@@ -283,11 +291,13 @@ Resultado *obtener_total_registro_1_svc(int *ndxrec, struct svc_req *peticion)
     else
     {
         // A RELLENAR
-        |
-        |
-        |
-        |
-        |
+        int totalConsultas = 0;
+        for (i = 0; i < numdominios; i++)
+        {
+            totalConsultas += contabilidad_consultas[i][*ndxrec];
+        }
+        res.caso = 1;
+        res.Resultado_u.val = totalConsultas;
     }
     return (&res);
 }
@@ -314,9 +324,9 @@ Resultado *obtener_total_dominioregistro_1_svc(domrecord *q, struct svc_req *pet
     else
     {
         // A RELLENAR
-        |
-        |
-        |
+        int contador = contabilidad_consultas[q->ndxdom][q->ndxrecord];
+        res.caso = 1;
+        res.Resultado_u.val = contador;
     }
     return (&res);
 }
@@ -383,7 +393,7 @@ Resultado *obtener_nombre_record_1_svc(int *n, struct svc_req *peticion)
     }
     else
     {
-        res.Resultado_u.msg = obtener_nombre_record_1_svc(*n, peticion);
+        res.Resultado_u.msg = obtener_dato_en_posicion(*n, lnomtiposrec);
         if (res.Resultado_u.msg == NULL)
         {
             res.caso = 2;
