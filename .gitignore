@@ -8,3 +8,6 @@ Entregable/PrimeraParte/p1/*.log
 Entregable/PrimeraParte/p2/*.dat
 Entregable/PrimeraParte/p2/*.txt
 Entregable/PrimeraParte/p2/*.log
+
+Entregable/PrimeraParte/p2/*.o
+Entregable/PrimeraParte/p2/srvdns_*
