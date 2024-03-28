@@ -1,0 +1,16 @@
+tecexample.com, NS, 
+	Resultado: ns1.hostingexample.com:ns2.hostingexample.com
+tecexample.com, MX, 
+	Resultado: mail.tecexample.com
+cloudsrv.net, NS, 
+	Resultado: ns1.cloudprovider.com:ns2.cloudprovider.com
+cloudsrv.net, MX, 
+	Resultado: smtp.cloudsrv.net:smtp2.cloudsrv.net
+mywebsite.org, NS, 
+	Resultado: ns1.webhost.org:ns2.webhost.org
+mywebsite.org, MX, 
+	Resultado: mail.mywebsite.org
+innovatech.io, NS, 
+	Resultado: ns1.innovationhost.io:ns2.innovationhost.io
+innovatech.io, MX, 
+	Resultado: mail.innovatech.io:smtp.innovatech.io
