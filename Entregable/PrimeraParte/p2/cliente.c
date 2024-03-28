@@ -196,7 +196,6 @@ int main(int argc, char *argv[])
     FILE *fp;
     char msg[TAMLINEA];
 
-    perror("Sonda 1: Inicio programa");
     // El programa comienza verificando que los argumentos de entrada son correctos
     if (argc != 4)
     {
@@ -231,10 +230,6 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-
-
-    perror("Sonda 2: Argumentos validados");
-
     // Intenta abrir el fichero por si hubiera problemas abortar (aunque main
     // no usa este fichero sino que se lo pasará a los hilos Cliente)
     if ((fp = fopen(argv[3], "r")) == NULL)
@@ -243,8 +238,6 @@ int main(int argc, char *argv[])
         exit(5);
     }
     fclose(fp);
-
-    perror("Sonda 3: Fichero consultas comprobado");
 
     // Ya que los stub de cliente comparten una variable estática, para evitar que los
     // diferentes hilos cliente se pisen entre ellos, se usa un mutex para evitar
@@ -255,9 +248,6 @@ int main(int argc, char *argv[])
         exit(6);
     }
 
-
-
-    perror("Sonda 4: Reserva memoria hilos cliente");
     // Reservamos memoria para los objetos de datos de hilo
     th = (pthread_t *)malloc(sizeof(pthread_t) * num_clientes);
     if (th == NULL)
@@ -267,7 +257,6 @@ int main(int argc, char *argv[])
         exit(7);
     }
 
-    perror("Sonda 5: Creando Hilos");
     // Creación de un hilo para cada cliente. Estos sí reciben como parámetro
     // un puntero a la estructura con su id de cliente (igual al valor del índice del bucle)
     // y el nombre del fichero de consultas
@@ -282,17 +271,12 @@ int main(int argc, char *argv[])
         q->id_cliente = i;
         q->nom_fichero_consultas = argv[3];
 
-        perror("Sonda: Creating a new thread");
         if (pthread_create(&th[i], NULL, (void*) Cliente, q) != 0) {
             perror("Error al crear hilo de cliente");
             exit(EXIT_FAILURE);
         }
-        perror("Sonda: new thread created");
     }
 
-
-
-    perror("Sonda 6: Esperamos la finalizacion de los clientes...");
     // Esperar a que terminen los hilos Cliente
     for (i = 0; i < num_clientes; i++)
     {
