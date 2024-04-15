@@ -1,6 +1,6 @@
 # Sistemas Distribuidos
 
-<div style="position: absolute; z-index: 9999;">
+<div style="position: absolute; z-index:-9999;">
     <img src="https://www.codewithharry.com/img/notes/c.webp" align="right" />
 </div>
 
