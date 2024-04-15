@@ -1,10 +1,25 @@
 # Sistemas Distribuidos
 
-<div style="position: absolute; z-index:-9999;">
-    <img src="https://www.codewithharry.com/img/notes/c.webp" align="right" />
-</div>
+<img src="https://www.codewithharry.com/img/notes/c.webp" align="right" />
 
 ¡Bienvenido al repositorio "Sistemas Distribuidos"! Este proyecto se dedica a explorar e implementar sistemas distribuidos eficientes desde cero utilizando el lenguaje de programación C.
+
+```C
+void initTCPConx() {
+    int sock = 0, valread;
+    struct sockaddr_in serv_addr;
+
+    // Create socket
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
+
+    inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr);
+    connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+    printf("Connected to TCP socket\n");
+    close(sock);
+}
+```
 
 ## Descripción General
 
