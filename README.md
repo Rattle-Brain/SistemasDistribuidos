@@ -1,6 +1,8 @@
 # Sistemas Distribuidos
 
-<img src="https://www.codewithharry.com/img/notes/c.webp" align=right>
+<div style="position: absolute; z-index: 9999;">
+    <img src="https://www.codewithharry.com/img/notes/c.webp" align="right" />
+</div>
 
 ¡Bienvenido al repositorio "Sistemas Distribuidos"! Este proyecto se dedica a explorar e implementar sistemas distribuidos eficientes desde cero utilizando el lenguaje de programación C.
 
