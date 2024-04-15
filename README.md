@@ -1,5 +1,7 @@
 # Sistemas Distribuidos
 
+<img src="https://images.credly.com/images/0ad62d21-812b-425b-b3b0-973e816e82b3/Distributed_Computing_GVSU_Badge.png" align=right>
+
 ¡Bienvenido al repositorio "Sistemas Distribuidos"! Este proyecto se dedica a explorar e implementar sistemas distribuidos eficientes desde cero utilizando el lenguaje de programación C.
 
 ## Descripción General
