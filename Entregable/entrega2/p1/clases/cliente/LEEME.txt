@@ -1,0 +1,1 @@
+En esta carpeta aparecerán al compilar las clases del cliente y de Estadis.

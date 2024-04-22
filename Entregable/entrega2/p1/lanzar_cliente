@@ -1,0 +1,9 @@
+#!/usr/bin/sh
+
+if [ "$#" -ne 3 ]; then
+    echo "Forma de uso: $0 <id_cliente> <fichero_consultas> <fichero_respuestas>"
+    exit
+fi
+echo "Lanzando Cliente"
+CLASSPATH=clases:clases/amqp-client-5.21.0.jar:clases/slf4j-api-1.7.2.jar:clases/slf4j-simple-1.7.2.jar
+java -cp $CLASSPATH cliente.Cliente $1 $2 $3

@@ -1,0 +1,5 @@
+#!/usr/bin/sh
+
+echo "Lanzando Estadis"
+CLASSPATH=clases
+java -cp $CLASSPATH cliente.Estadis

@@ -1,0 +1,14 @@
+echo "Compilando interfaz RMI del Cliente"
+
+CLASSPATH=../clases:../clases/amqp-client-5.21.0.jar
+
+javac -d ../clases ClienteInterface.java
+
+echo "Compilando implementación RMI del Cliente"
+javac -d ../clases -cp ../clases ClienteImpl.java
+
+echo "Compilando el cliente de DNS"
+javac -d ../clases -cp $CLASSPATH Cliente.java
+
+echo "Compilando el generador de estadisticas de DNS"
+javac -d ../clases -cp $CLASSPATH Estadis.java

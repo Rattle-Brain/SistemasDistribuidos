@@ -1,0 +1,10 @@
+#!/usr/bin/sh
+
+if [ "$#" -ne 4 ]; then
+    echo "Forma de uso: $0 <tam_cola> <num_workers> <fichero_registros> <fichero_log>"
+    exit
+fi
+
+echo "Lanzando el srvdns"
+CLASSPATH=clases:clases/amqp-client-5.21.0.jar:clases/slf4j-api-1.7.2.jar:clases/slf4j-simple-1.7.2.jar
+java -cp $CLASSPATH srvdns.SrvDNS $1 $2 $3 $4 &

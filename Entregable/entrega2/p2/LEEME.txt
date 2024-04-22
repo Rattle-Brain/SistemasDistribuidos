@@ -1,0 +1,8 @@
+Pon en esta carpeta el código de filosofos.c, maestro.c y si has usado algún otro código .c auxiliar
+junto con el Makefile que compila todo.
+
+Recuerda añadir comentarios // FASE X a las líneas que hayas modificado, como se explica en el
+enunciado del entregable.
+
+Añade a este LEEME.txt la explicación de cómo has resuelto la Fase 4, si la has hecho. Puedes añadir
+también cualquier comentario que consideres relevante.
