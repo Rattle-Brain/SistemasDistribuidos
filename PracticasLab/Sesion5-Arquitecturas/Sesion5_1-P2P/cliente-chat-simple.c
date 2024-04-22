@@ -14,6 +14,9 @@
 #define MAX_TAM_MENSAJE 500
 #define MAX_TAM_NICK    10
 
+// IP length
+#define IP_LEN 25
+
 char *nick;                 // Para enviarlo en cada mensaje
 
 // Estas funciones están implementadas después de main()
@@ -87,6 +90,21 @@ int main(int argc, char *argv[])
         /* de las variables necesarias                     */
         /***************************************************/
 
+        // Limpiar y configurar el conjunto de descriptores de archivo para la lectura
+        FD_ZERO(&escucha);
+        FD_SET(socketUDP, &escucha); // Agregar el socket UDP al conjunto
+        FD_SET(teclado, &escucha);   // Agregar el descriptor del teclado al conjunto
+
+        // Determinar el descriptor de archivo más grande
+        max = (socketUDP > teclado) ? socketUDP : teclado;
+
+        // Llamar a select para esperar eventos de lectura en el socket UDP o el teclado
+        resultado = select(max, &escucha, NULL, NULL, NULL);
+        if (resultado < 0) {
+            perror("Error en select");
+            exit(EXIT_FAILURE);
+        }
+
         // Al salir es que algo ha ocurrido
         if (FD_ISSET(socketUDP, &escucha))
         {
@@ -115,10 +133,10 @@ void leer_y_procesar_teclado(int socketUDP)
 {
     char linea[MAX_TAM_LINEA];
     char cmd[MAX_TAM_LINEA];
-    static char ip_destino[25] = "No asignada";
+    static char ip_destino[IP_LEN] = "No asignada";
     static int  puerto_destino = 0;
     static struct sockaddr_in dir_destino;
-    char *mensaje_a_enviar;
+    char *mensaje;
     int i;
 
     // Leer la línea
@@ -146,6 +164,28 @@ void leer_y_procesar_teclado(int socketUDP)
         /* En función del valor encontrado en cmd, realizamos  */
         /* la acción apropiada                                 */
         /*******************************************************/
+        if (strcmp(cmd, "/CHAT") == 0)
+        {
+            // Cambiar la IP y puerto de destino para los mensajes
+            char nueva_ip[IP_LEN];
+            int nuevo_puerto;
+            sscanf(linea, "%*s %s %d", nueva_ip, &nuevo_puerto);
+            strncpy(ip_destino, nueva_ip, IP_LEN);
+            puerto_destino = nuevo_puerto;
+            printf("Se han cambiado la IP y el puerto de destino a: %s:%d\n", ip_destino, puerto_destino);
+        }
+        else if (strcmp(cmd, "/QUIT") == 0)
+        {
+            // Salir del programa
+            printf("Saliendo del programa...\n");
+            exit(0);
+        }
+        else
+        {
+            // Comando desconocido
+            printf("Comando desconocido: %s\n", cmd);
+        }
+
     }
     else      // Si la linea no comienza por /, es un mensaje a enviar al peer
     {
@@ -165,5 +205,34 @@ void leer_y_procesar_teclado(int socketUDP)
         /* A RELLENAR                                          */
         /* Crear un buffer con el mensaje a enviar y enviarlo  */
         /*******************************************************/
+
+         // Crear el mensaje a enviar (incluyendo el nick)
+        mensaje = (char *)malloc(MAX_TAM_LINEA * sizeof(char));
+        sprintf(mensaje, "%s> %s", nick, linea);
+
+        // Enviar el mensaje al peer
+            struct sockaddr_in dir_destino;
+
+        // Configurar la dirección de destino
+        memset(&dir_destino, 0, sizeof(dir_destino));
+        dir_destino.sin_family = AF_INET;
+        dir_destino.sin_port = htons(puerto_destino);
+        dir_destino.sin_addr.s_addr = inet_addr(ip_destino);
+
+        // Enviar el mensaje al peer
+        int bytes_enviados = sendto(socketUDP, mensaje, strlen(mensaje),
+            0, (struct sockaddr *)&dir_destino, sizeof(dir_destino));
+        if (bytes_enviados == -1)
+        {
+            perror("Error al enviar mensaje");
+            return;
+        }
+
+        // Liberar memoria del mensaje
+        free(mensaje);
+
+        // Cerrar el socket
+        close(socketUDP);
+
     }
 }
