@@ -125,7 +125,7 @@ void recibir_y_mostrar_mensaje(int socketUDP)
     recibidos = recvfrom(socketUDP, buff, MAX_TAM_MENSAJE, 0, NULL, NULL);
     if (recibidos == -1) return; // Ignoramos silenciosamente errores
     buff[recibidos] = 0;
-    printf("**|%s|\n", buff);
+   printf("\n\033[90m**|%s|\033[0m\n", buff);
 }
 
 void leer_y_procesar_teclado(int socketUDP)
@@ -150,8 +150,6 @@ void leer_y_procesar_teclado(int socketUDP)
         else
             break;
     }
-    // Sacar un nuevo prompt
-    printf("%s> ", nick);
 
     // Ver si es un comando
     if (linea[0] == '/')
