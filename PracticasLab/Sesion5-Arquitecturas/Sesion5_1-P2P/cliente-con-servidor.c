@@ -27,9 +27,6 @@
 
 #include "cliente-con-servidor.h"
 #include "protocolo.h"
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
 
 // User info
 char *nick;
