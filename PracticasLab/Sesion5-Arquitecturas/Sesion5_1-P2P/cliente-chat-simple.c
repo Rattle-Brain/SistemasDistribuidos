@@ -96,10 +96,10 @@ int main(int argc, char *argv[])
         FD_SET(teclado, &escucha);   // Agregar el descriptor del teclado al conjunto
 
         // Determinar el descriptor de archivo más grande
-        max = (socketUDP > teclado) ? socketUDP : teclado;
+        //max = (socketUDP > teclado) ? socketUDP : teclado;
 
         // Llamar a select para esperar eventos de lectura en el socket UDP o el teclado
-        resultado = select(max, &escucha, NULL, NULL, NULL);
+        resultado = select(socketUDP + 1, &escucha, NULL, NULL, NULL);
         if (resultado < 0) {
             perror("Error en select");
             exit(EXIT_FAILURE);
@@ -108,12 +108,15 @@ int main(int argc, char *argv[])
         // Al salir es que algo ha ocurrido
         if (FD_ISSET(socketUDP, &escucha))
         {
+            perror("SHOCKUCHA");
             recibir_y_mostrar_mensaje(socketUDP);
+            printf("%s> ", nick);
         }
 
         if (FD_ISSET(teclado, &escucha))
         {
             leer_y_procesar_teclado(socketUDP);
+            printf("%s> ", nick);
         }
     }
 }
@@ -126,7 +129,7 @@ void recibir_y_mostrar_mensaje(int socketUDP)
     recibidos = recvfrom(socketUDP, buff, MAX_TAM_MENSAJE, 0, NULL, NULL);
     if (recibidos == -1) return; // Ignoramos silenciosamente errores
     buff[recibidos] = 0;
-    printf("\n**|%s|\n", buff);
+    printf("**|%s|\n", buff);
 }
 
 void leer_y_procesar_teclado(int socketUDP)
@@ -138,6 +141,8 @@ void leer_y_procesar_teclado(int socketUDP)
     static struct sockaddr_in dir_destino;
     char *mensaje;
     int i;
+
+    int resultado, socket_send;
 
     // Leer la línea
     fgets(linea, MAX_TAM_LINEA - MAX_TAM_NICK, stdin);
@@ -169,9 +174,18 @@ void leer_y_procesar_teclado(int socketUDP)
             // Cambiar la IP y puerto de destino para los mensajes
             char nueva_ip[IP_LEN];
             int nuevo_puerto;
+
             sscanf(linea, "%*s %s %d", nueva_ip, &nuevo_puerto);
             strncpy(ip_destino, nueva_ip, IP_LEN);
+
             puerto_destino = nuevo_puerto;
+
+            // Configurar la dirección de destino
+
+            dir_destino.sin_family = AF_INET;
+            dir_destino.sin_port = htons(puerto_destino);
+            dir_destino.sin_addr.s_addr = inet_addr(ip_destino);
+
             printf("Se han cambiado la IP y el puerto de destino a: %s:%d\n", ip_destino, puerto_destino);
         }
         else if (strcmp(cmd, "/QUIT") == 0)
@@ -206,18 +220,9 @@ void leer_y_procesar_teclado(int socketUDP)
         /* Crear un buffer con el mensaje a enviar y enviarlo  */
         /*******************************************************/
 
-         // Crear el mensaje a enviar (incluyendo el nick)
+        // Crear el mensaje a enviar (incluyendo el nick)
         mensaje = (char *)malloc(MAX_TAM_LINEA * sizeof(char));
         sprintf(mensaje, "%s> %s", nick, linea);
-
-        // Enviar el mensaje al peer
-            struct sockaddr_in dir_destino;
-
-        // Configurar la dirección de destino
-        memset(&dir_destino, 0, sizeof(dir_destino));
-        dir_destino.sin_family = AF_INET;
-        dir_destino.sin_port = htons(puerto_destino);
-        dir_destino.sin_addr.s_addr = inet_addr(ip_destino);
 
         // Enviar el mensaje al peer
         int bytes_enviados = sendto(socketUDP, mensaje, strlen(mensaje),
@@ -230,9 +235,5 @@ void leer_y_procesar_teclado(int socketUDP)
 
         // Liberar memoria del mensaje
         free(mensaje);
-
-        // Cerrar el socket
-        close(socketUDP);
-
     }
 }
