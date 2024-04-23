@@ -95,9 +95,6 @@ int main(int argc, char *argv[])
         FD_SET(socketUDP, &escucha); // Agregar el socket UDP al conjunto
         FD_SET(teclado, &escucha);   // Agregar el descriptor del teclado al conjunto
 
-        // Determinar el descriptor de archivo más grande
-        //max = (socketUDP > teclado) ? socketUDP : teclado;
-
         // Llamar a select para esperar eventos de lectura en el socket UDP o el teclado
         resultado = select(socketUDP + 1, &escucha, NULL, NULL, NULL);
         if (resultado < 0) {
@@ -108,7 +105,6 @@ int main(int argc, char *argv[])
         // Al salir es que algo ha ocurrido
         if (FD_ISSET(socketUDP, &escucha))
         {
-            perror("SHOCKUCHA");
             recibir_y_mostrar_mensaje(socketUDP);
             printf("%s> ", nick);
         }
