@@ -12,6 +12,12 @@
 // pero no se implementan. El alumno puede copiar su implementación
 // de otros ejercicios, o implementarlas él mismo
 
+/*
+*****************************************************
+*  NO TE AGOBIES PAPI QUE LAS TIENES IMPLEMENTADAS  *
+*****************************************************
+*/
+
 // Crea un socket y si no hay errores lo retorna
 int CrearSocketClienteTCP(void);
 

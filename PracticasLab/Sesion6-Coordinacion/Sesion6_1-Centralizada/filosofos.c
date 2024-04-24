@@ -121,3 +121,76 @@ int controlMutex(char *ipmaster, int puerto, char op, int nummutex)
     //1-OK, 0-NO OK
     return(atoi(ptr));
 }
+
+/*
+###################################################################
+###################################################################
+###################################################################
+###################################################################
+*/
+
+// Funciones que faltaban
+
+// Devuelve el fd del socket TCP creado
+int CrearSocketClienteTCP(void){
+    int socketTCP;
+
+    // Crear el socket TCP
+    socketTCP = socket(AF_INET, SOCK_STREAM, 0);
+    if (socketTCP == -1) {
+        perror("Error al crear el socket TCP");
+        return -1;
+    }
+    return socketTCP;
+}
+
+// Con los parametros que recibe trata de conectarse a un servidor
+// Si falla pues para la ejecucion.
+void ConectarConServidor(int sockfd, char *ip, int puerto) {
+    struct sockaddr_in servaddr;
+
+    // Configurar la dirección del servidor
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = inet_addr(ip); // Convertir la dirección IP de cadena a formato numérico
+    servaddr.sin_port = htons(puerto); // Convertir el puerto de host a orden de red
+
+    // Conectar al servidor
+    if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) != 0) {
+        perror("Error al conectar con el servidor");
+        close(sockfd);
+        exit(EXIT_FAILURE);
+    }
+}
+
+// Función para cerrar un socket
+void CerrarSocket(int sockfd) {
+    int resultado = close(sockfd);
+    if (resultado == -1) {
+        perror("Error al cerrar el socket");
+        exit(EXIT_FAILURE);
+    }
+}
+
+// Función para enviar datos a través de un socket
+// Si hay errores, termina el programa
+int Enviar(int s, char *buff, int longitud) {
+    int rec_bytes = send(s, buff, longitud, 0);
+    if (rec_bytes == -1) {
+        perror("Error al enviar datos");
+        close(s);
+        exit(EXIT_FAILURE);
+    }
+    return rec_bytes;
+}
+
+// Función para recibir datos a través de un socket
+// Si hay errores, termina el programa
+int Recibir(int s, char *buff, int longitud) {
+    int rec_bytes = recv(s, buff, longitud, 0);
+    if (rec_bytes == -1) {
+        perror("Error al recibir datos");
+        close(s);
+        exit(EXIT_FAILURE);
+    }
+    return rec_bytes;
+}
