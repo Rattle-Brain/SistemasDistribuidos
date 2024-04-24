@@ -1,15 +1,15 @@
 CFLAGS=-Wall
 LDFLAGS=-pthread
 
-OBJETIVOS=filodist2
+OBJETIVOS=filodist
 all: $(OBJETIVOS)
 
 %: %.o
-    $(CC) -o $@ $< $(LDFLAGS)
+	$(CC) -o $@ $< $(LDFLAGS)
 %: %.c
-    $(CC) -o $@ $(CFLAGS) $< $(LDFLAGS)
+	$(CC) -o $@ $(CFLAGS) $< $(LDFLAGS)
 clean:
-    -rm *~ *.o
+	-rm *~ *.o
 
 cleanall: clean
-    -rm $(OBJETIVOS)
+	-rm $(OBJETIVOS)
