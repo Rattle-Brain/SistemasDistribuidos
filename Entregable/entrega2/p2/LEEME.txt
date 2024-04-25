@@ -6,3 +6,27 @@ enunciado del entregable.
 
 Añade a este LEEME.txt la explicación de cómo has resuelto la Fase 4, si la has hecho. Puedes añadir
 también cualquier comentario que consideres relevante.
+
+
+// Solucion de la fase 4.
+En mi caso nunca se produce un caso de starvation. No se como se esperaba que solucionase la fase 3 de forma
+que aún tuviese ese problema. Lo cierto es que no leí que debía utilizarse strtok_r y utilicé sscanf en su
+lugar.
+
+La cosa es que a la hora de hacer lock a los palillos lo hago de forma simultánea, en el mismo condicional, y lo
+mismo para soltarlos. Probablemente eso haya resuelto el problema de starvation de forma automática. Es 
+posible que sea el uso de sscanf para parsear las tres variables que necesito a la vez y por eso no sufre ese problema.
+
+Lo que cambia mi código respecto al original es que aparte de recibir dos números en lugar de uno, utilizo la función
+sscanf() para obtener tres valores (el ptr para la letra L/U, el char *palillo1 y el char *palillo2) que me indican
+la accion a realizar y los mutex sobre los que hacerlo.
+
+Luego es cuestión de crear dos variables "poslista" en lugar de uno y asignar
+    poslista_1 = atoi(palillo1);
+    poslista_2 = atoi(palillo2);
+
+Se comprueba que ambos valores estan en rangos validos y se bloquean ambos mutex a la vez.
+Para desbloquear los mutex, la filosofia es la misma pero con pthread_mutex_unlock().
+
+Yo resolví el problema de la fase 3 así y no causa starvation, por más que intento generar los filosofos 
+de forma simultánea.
