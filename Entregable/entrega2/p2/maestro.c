@@ -159,7 +159,8 @@ void * procesaPeticion(petinfo * pet) {
     int leidos, escritos;
     char buffer[MAX_LINEA];
     char * ptr;
-    int poslista;
+    char *palillo1, *palillo2;  // FASE 3: Modificacion del protocolo
+    int poslista_1, poslista_2; // FASE 3: Modificacion del protocolo
     char valido = 1;
 
     // Recibir mensaje
@@ -168,30 +169,52 @@ void * procesaPeticion(petinfo * pet) {
     {
         return NULL;
     }
+
+    // FASE 3: Inicializacion de variables
+    ptr = malloc(sizeof(char));
+    palillo1 = malloc(sizeof(char));
+    palillo2 = malloc(sizeof(char));
+
+
     //interpretar el mensaje
-    ptr = strtok(buffer, " \t");
+    sscanf(buffer, "%s %s %s", ptr, palillo1, palillo2);    // FASE 3: scnaf de las variables
+
+    //ptr = strtok(buffer, " \t");
+    //printf("%s\n", ptr);
     switch ( * ptr) {
     case 'l':
     case 'L':
-        ptr = strtok(NULL, " \t");
-        poslista = atoi(ptr);
-        if ((poslista < 0) || (poslista > (pet -> tamlista - 1)))
+        //ptr = strtok(NULL, " ");
+        // ptr2 = strtok(NULL, " \t");
+        poslista_1 = atoi(palillo1);    // FASE 3: asignacion de los palillos
+        poslista_2 = atoi(palillo2);    // FASE 3: asignacion de los palillos
+        
+        if (((poslista_1 < 0) || (poslista_1 > (pet -> tamlista - 1))) ||
+            ((poslista_2 < 0) || (poslista_2 > (pet -> tamlista - 1))))
             valido = 0;
-        else
+        else{
             //esperar a tener el mutex que protege al recurso solicitado
-            pthread_mutex_lock( & pet -> lista[poslista]);
+            pthread_mutex_lock( & pet -> lista[poslista_1]);
+            pthread_mutex_lock( & pet -> lista[poslista_2]);
+        }
         //en este punto ya se garantiza que tenemos el acceso exclusivo
         //a dicho recurso
         break;
     case 'u':
     case 'U':
-        ptr = strtok(NULL, " \t");
-        poslista = atoi(ptr);
-        if ((poslista < 0) || (poslista > (pet -> tamlista - 1)))
+        //ptr = strtok(NULL, " ");
+        // ptr2 = strtok(NULL, " \t");
+        poslista_1 = atoi(palillo1);    // FASE 3: liberacion de los palillos
+        poslista_2 = atoi(palillo2);    // FASE 3: liberacion de los palillos
+
+        if (((poslista_1 < 0) || (poslista_1 > (pet -> tamlista - 1))) ||
+            ((poslista_2 < 0) || (poslista_2 > (pet -> tamlista - 1))))
             valido = 0;
-        else
+        else{
             //desbloquear el mutex que protege al recurso que se libera
-            pthread_mutex_unlock( & pet -> lista[poslista]);
+            pthread_mutex_unlock( & pet -> lista[poslista_1]);
+            pthread_mutex_unlock( & pet -> lista[poslista_2]);
+        }
         break;
     default:
         valido = 0;

@@ -44,7 +44,7 @@ void CerrarSocket(int s);
 
 //Prototipos de las funciones
 void filosofo(int numfilo,char *ip,int puerto,int maxfilo);
-int controlMutex(char *ipmaster, int puerto, char op, int nummutex);
+int controlMutex(char *ipmaster, int puerto, char op, int palillo1, int palillo2);    // FASE 3: Modificacion del protocolo
 
 // FASE 2:
 void log_debug(char* msg); 
@@ -98,6 +98,10 @@ void filosofo(int numfilo,char *ip,int puerto,int maxfilo)
 {
     int veces=0;
 
+    // FASE 3: Extraccion de variables por limpieza.
+    int palillo1 = numfilo;
+    int palillo2 = (numfilo+1)%maxfilo;
+
     // FASE 2: log_debug
     sprintf(log_msg, "Filosofo %d sentado a la mesa.\n", numfilo);
     log_debug(log_msg);
@@ -105,10 +109,10 @@ void filosofo(int numfilo,char *ip,int puerto,int maxfilo)
     {
         // mientras el acuse de la solicitud de palillo derecho sea 0
         // seguimos intentándolo
-        while (controlMutex(ip,puerto,LOCK,numfilo)==0);
+        while (controlMutex(ip, puerto, LOCK, palillo1, palillo2)==0);     // FASE 3: Modificacion del protocolo
         // mientras el acuse de la solicitud de palillo izquierdo sea 0
         // seguimos intentándolo
-        while (controlMutex(ip,puerto,LOCK,(numfilo+1)%maxfilo)==0);
+        // while (controlMutex(ip,puerto,LOCK,palillo2)==0);
         // ya tenemos ambos palillos y por tanto podemos comer
 
         // FASE 2: log_debug
@@ -119,11 +123,11 @@ void filosofo(int numfilo,char *ip,int puerto,int maxfilo)
         // mientras el acuse de liberación de palillo izquierdo sea 0
         // seguimos intentando
         //liberar el palillo
-        while (controlMutex(ip,puerto,UNLOCK,(numfilo+1)%maxfilo)==0);
+        while (controlMutex(ip, puerto, UNLOCK, palillo1, palillo2)==0);   // FASE 3: Modificacion del protocolo
         // mientras el acuse de liberación de palillo derecho sea 0
         // seguimos intentando
         // liberar el palillo
-        while (controlMutex(ip,puerto,UNLOCK,numfilo)==0);
+        //while (controlMutex(ip,puerto,UNLOCK,palillo1)==0);
         //el filosofo ha soltado ambos palillos y puede dedicarse a pensar
 
         // FASE 2: log_debug
@@ -144,7 +148,7 @@ void filosofo(int numfilo,char *ip,int puerto,int maxfilo)
 
 //esta función le permite al filósofo solicitar-liberar un recurso
 //gestionado por el coordinador
-int controlMutex(char *ipmaster, int puerto, char op, int nummutex)
+int controlMutex(char *ipmaster, int puerto, char op, int palillo1, int palillo2)   // FASE 3: Modificacion del protocolo
 {
     //Necesita de las funciones de libsokets
     int sock;
@@ -161,10 +165,10 @@ int controlMutex(char *ipmaster, int puerto, char op, int nummutex)
 
     switch (op){
         case LOCK:
-            sprintf(buffer,"L %d",nummutex);
+            sprintf(buffer,"L %d %d",palillo1, palillo2);       // FASE 3: Modificacion del protocolo
             break;
         case UNLOCK:
-            sprintf(buffer,"U %d",nummutex);
+            sprintf(buffer,"U %d %d",palillo1, palillo2);       // FASE 3: Modificacion del protocolo
             break;
     }
 
@@ -254,7 +258,7 @@ int Recibir(int s, char *buff, int longitud) {
     return rec_bytes;
 }
 
-
+// FASE 2: log_debug definition
 void log_debug(char *msg)
 {
     struct timespec t;
