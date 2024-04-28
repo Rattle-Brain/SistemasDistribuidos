@@ -5,7 +5,7 @@ PUERTO=$1
 
 ./maestro $PUERTO 5 &
 #sleep 1
-for i in 0 1 2 3 4 
+for i in 0 4 2 1 3
 do
   #sleep .5  # Para que no arranquen todos a la vez
   ./filosofos  $i 127.0.0.1 $PUERTO 5  &

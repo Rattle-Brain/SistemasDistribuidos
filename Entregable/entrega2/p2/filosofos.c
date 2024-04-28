@@ -103,7 +103,7 @@ void filosofo(int numfilo,char *ip,int puerto,int maxfilo)
     int palillo2 = (numfilo+1)%maxfilo;
 
     // FASE 2: log_debug
-    sprintf(log_msg, "Filosofo %d sentado a la mesa.\n", numfilo);
+    sprintf(log_msg, "\033[1;34mFilosofo %d sentado a la mesa.\033[0m\n", numfilo);
     log_debug(log_msg);
     while (veces<MAX_BOCADOS)
     {
@@ -116,7 +116,7 @@ void filosofo(int numfilo,char *ip,int puerto,int maxfilo)
         // ya tenemos ambos palillos y por tanto podemos comer
 
         // FASE 2: log_debug
-        sprintf(log_msg, "El filosofo %d esta comiendo.\n", numfilo);
+        sprintf(log_msg, "\033[1;31mEl filosofo %d toma palillos %d, %d y esta comiendo.\033[0m\n", numfilo, palillo1, palillo2);
         log_debug(log_msg);
 
         sleep(3);
@@ -131,7 +131,7 @@ void filosofo(int numfilo,char *ip,int puerto,int maxfilo)
         //el filosofo ha soltado ambos palillos y puede dedicarse a pensar
 
         // FASE 2: log_debug
-        sprintf(log_msg, "El filosofo %d esta pensando.\n", numfilo);
+        sprintf(log_msg, "\033[1;32mEl filosofo %d esta pensando.\033[0m\n", numfilo);
         log_debug(log_msg);
 
         sleep(5);
@@ -142,7 +142,7 @@ void filosofo(int numfilo,char *ip,int puerto,int maxfilo)
     //el filósofo ha completado el número de bocados y se levanta de la mesa
 
     // FASE 2: log_debug
-    sprintf(log_msg, "El filosofo %d se ha levantado de la mesa.\n", numfilo);
+    sprintf(log_msg, "\033[1;34mEl filosofo %d se ha levantado de la mesa.\033[0m\n", numfilo);
     log_debug(log_msg);
 }
 
