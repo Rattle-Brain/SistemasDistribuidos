@@ -7,15 +7,10 @@ enunciado del entregable.
 Añade a este LEEME.txt la explicación de cómo has resuelto la Fase 4, si la has hecho. Puedes añadir
 también cualquier comentario que consideres relevante.
 
-
 // Solucion de la fase 4.
-En mi caso nunca se produce un caso de starvation. No se como se esperaba que solucionase la fase 3 de forma
-que aún tuviese ese problema. Lo cierto es que no leí que debía utilizarse strtok_r y utilicé sscanf en su
-lugar.
 
-La cosa es que a la hora de hacer lock a los palillos lo hago de forma simultánea, en el mismo condicional, y lo
-mismo para soltarlos. Probablemente eso haya resuelto el problema de starvation de forma automática. Es 
-posible que sea el uso de sscanf para parsear las tres variables que necesito a la vez y por eso no sufre ese problema.
+No se produce nunca una condicion de carrera que de lugar al deadlock de los procesos. Con solucionar bien la fase 3
+se resuelve automaticamente la fase 4.
 
 Lo que cambia mi código respecto al original es que aparte de recibir dos números en lugar de uno, utilizo la función
 sscanf() para obtener tres valores (el ptr para la letra L/U, el char *palillo1 y el char *palillo2) que me indican
@@ -31,25 +26,26 @@ Para desbloquear los mutex, la filosofia es la misma pero con pthread_mutex_unlo
 Yo resolví el problema de la fase 3 así y no causa starvation, por más que intento generar los filosofos 
 de forma simultánea.
 
-¿Por que funciona esta solucion?
-En el peor caso si el filósofo 0 y el cuatro se sientan a la vez, 
-el f0 reservaría los palillos 0 y 1, y el f4 los palillos 4 y 0.
+## ¿Por que funciona esta solucion?
 
-Es decir, suponiendo que lleguen a la vez, el primer mutex del f0 sería para el palillo 0 
-y el primero del f4 para el 4. 
+    En el peor caso si el filósofo 0 y el cuatro se sientan a la vez, 
+    el f0 reservaría los palillos 0 y 1, y el f4 los palillos 4 y 0.
 
-El segundo mutex del f0 reserva el palillo 1 y el 4 haría la reserva del 0, 
-que no está disponible porque el filosofo 0 ya llegó, y lo reservó, por lo que tiene que esperar a que termine el filósofo 0
+    Es decir, suponiendo que lleguen a la vez, el primer mutex del f0 sería para el palillo 0 
+    y el primero del f4 para el 4. 
 
-Teóricamente, si todos los filósofos llegasen simultaneamente a la mesa, se daría un deadlock, sin embargo, por cómo funciona
-la creacion y gestion de hilos en C eso es imposible. El pthread_create se ejecuta en un bucle, por lo que siempre habrá un hilo
-que exista antes que otro y por tanto siempre habra uno que entre al programa antes que otro, reservando así dos palillos en lugar
-de uno solo.
+    El segundo mutex del f0 reserva el palillo 1 y el f4 haría la reserva del 0, 
+    que no está disponible porque el filosofo 0 ya llegó, y lo reservó, por lo que tiene que esperar a que termine el filósofo 0
 
-Incluso teniendo todos los hilos creados ya de antemano y forzando la espera de cada uno para que soliciten un palillo a la 
-vez, la probabilidad de deadlock es infima. Solo se necesita un tic de reloj de diferencia de entre un filosofo y otro para
-darle tiempo a que uno reserve dos palillos en lugar de uno.
+    En teoria, si todos los filósofos llegasen simultaneamente a la mesa, se daría un deadlock, sin embargo, en este caso esto es
+    completamente imposible que suceda por dos razones:
 
-Es decir, si los filosofos 0,1, 2 y 3 llegan exactamente al mismo tiempo, pero el 4 se demora un tick de reloj el filosofo
-3 ya puede reservar dos palillos en lugar de 1, rompiendo así el deadlock. Y con todo esto, la propia casuistica de que 
-lleguen 4 filosofos en el mismo exacto instante de tiempo es extremadamente improbable.
+        -   La primera es la propia construccion del programa. Es el maestro el que genera los hilos a petición del filósofo
+        que se conecta y, como las peticiones siempre llegan a través de un socket, no se pueden conectar varios filósofos simultáneamente,
+        sino que se atienden peticiones en un orden, mientras se encolan aquellas que no se pueden atender. 
+        Por ello, es imposible que se produzca una condicion de carrera.
+
+        -   La segunda es que, incluso suponiendo que el maestro pudiera atender a varias peticiones a la vez, por cómo C gestiona 
+        la creación de hilos, siempre hay un primero y un ultimo, por lo que siempre habrá un hilo que entre antes a la ejecicución
+        del pthread_mutex_lock, es decir, siempre habra un filosofo que se "siente" a destiempo de otro y que tenga dos palillos
+        disponibles para comer, evitando cualquier tipo de condicion de carrera.
