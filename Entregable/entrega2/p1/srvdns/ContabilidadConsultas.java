@@ -36,12 +36,17 @@ class ContabilidadConsultas {
         }
         // Inicializar con ceros la matriz de contadores (dándole el tamaño apropiado)
         // A RELLENAR:
-        |
-        |
-        |
-        |
-        |
-        |
+        filas = lnomdominios.size();
+        columnas = lnomtrec.size();
+
+        // Inicializar la matriz con ceros
+        val = new int[filas][columnas];
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                val[i][j] = 0;
+            }
+        }
+
 
     }
 
@@ -69,11 +74,14 @@ class ContabilidadConsultas {
         int ret;
 
         // A RELLENAR:
-        |
-        |
-        |
-        |
-
+        // Verificar que los índices estén dentro de los límites de la matriz
+        if (ndxdom >= 0 && ndxdom < val.length && 
+            ndxtipor >= 0 && ndxtipor < val[0].length) {
+            ret = val[ndxdom][ndxtipor];
+        } else {
+            // Si los índices están fuera de los límites, retornar -1 o algún valor indicativo de error
+            ret = -1;
+        }
         return ret;
     }
 

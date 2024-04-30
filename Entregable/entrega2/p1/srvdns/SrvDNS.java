@@ -32,6 +32,7 @@ import java.util.ListIterator;
 // Cola bloqueante para comunicar el hilo ReceptorConsultas y los hilos Worker
 import java.util.concurrent.ArrayBlockingQueue;
 
+import cliente.Cliente;
 // Import necesario para acceder a los métodos del cliente
 import cliente.ClienteInterface;
 
@@ -63,11 +64,11 @@ class ReceptorConsultas extends Thread {
         try {
             // Conectar con rabbitMQ
             // A RELLENAR:
-            |
-            |
-            |
-            |
-
+            final Connection connection = factory.newConnection();
+            final Channel channel = connection.createChannel();
+            channel.queueDeclare(NOMBRE_COLA_RABBIT, true, false, false, null);
+            System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+            channel.basicQos(1);
 
             // Espera por peticiones en la cola rabbitMQ
             Consumer consumer = new DefaultConsumer(channel) {
@@ -96,8 +97,7 @@ class ReceptorConsultas extends Thread {
             System.out.println("ReceptorConsultas. Esperando llegada de consultas de resolución DNS");
             // Arrancar la espera de mensajes en la cola RabbitMQ
             // A RELLENAR:
-            |
-            |
+            channel.basicConsume(NOMBRE_COLA_RABBIT, true, consumer);
 
         } catch (Exception e) { // No manejamos excepciones, simplemente abortamos
             e.printStackTrace();
@@ -137,8 +137,8 @@ class Worker extends Thread {
             while (true) { // Bucle infinito
                 // Esperar consulta en la cola bloqueante
                 // A RELLENAR:
-                |
-                |
+                cadena = cola.take();
+                String consulta = cadena;
 
                 // Procesar consulta separando sus campos por el caracter ","
                 String partes[] = consulta.split(",");
@@ -152,8 +152,8 @@ class Worker extends Thread {
                         // Localizar al cliente RMI al que hay que devolver la respuesta. Su nombre está en
                         // la primera parte del mensaje recibido desde la cola
                         // A RELLENAR:
-                        |
-                        |
+                        String nombreCliente = partes[0]; // El primer elemento es el nombre del cliente RMI
+                        Cliente rmiCli = (ClienteRMI)
 
                         // Procesar la consulta
                         if (partes[2].equals("MX") || partes[2].equals("NS")) {
