@@ -2,11 +2,11 @@ package srvdns;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.concurrent.ArrayBlockingQueue;
+//import java.util.concurrent.ArrayBlockingQueue;
 
 // Import para trabajar con listas
-import java.util.List;
-import java.util.ArrayList;
+//import java.util.List;
+//import java.util.ArrayList;
 
 /*
 La clase SrvDNSImpl implementa el interfaz SrvDNSInterface:
@@ -38,8 +38,7 @@ public class SrvDNSImpl extends UnicastRemoteObject implements SrvDNSInterface {
         // registro
 
         // A RELLENAR:
-        |
-        |
+        return acct.obtenerValorDominioTiporec(ndxdom, ndxtipor); // Llamada remota
 
     }
 
@@ -50,8 +49,7 @@ public class SrvDNSImpl extends UnicastRemoteObject implements SrvDNSInterface {
         // el servidor DNS
 
         // A RELLENAR:
-        |
-        |
+        return acct.obtenerNumeroDominios();
         
     }
 
@@ -62,8 +60,7 @@ public class SrvDNSImpl extends UnicastRemoteObject implements SrvDNSInterface {
         // los cuales es capaz de responder el servidor DNS
 
         // A RELLENAR:
-        |
-        |
+        return acct.obtenerNumeroTiposRegistros();
         
     }
 
@@ -73,8 +70,7 @@ public class SrvDNSImpl extends UnicastRemoteObject implements SrvDNSInterface {
         // Devuelve el nombre del dominio cuyo numero se pasa como argumento
 
         // A RELLENAR:
-        |
-        |
+        return acct.obtenerNombreDominioNth(ndxdom);
         
     }
 
@@ -84,8 +80,7 @@ public class SrvDNSImpl extends UnicastRemoteObject implements SrvDNSInterface {
         // Devuelve el nombre del tipo de registro cuyo numero se pasa como argumento
 
         // A RELLENAR:
-        |
-        |
+        return acct.obtenerNombreTipoRecNth(ndxrec);
         
     }
 }
