@@ -9,7 +9,5 @@ Interfaz remoto del Cliente que ha de hacer público el  método siguiente:
 */
 public interface ClienteInterface extends Remote {
     // A RELLENAR:
-    |
-    |
-
+    void setRespuesta(String respuesta) throws RemoteException;
 }
