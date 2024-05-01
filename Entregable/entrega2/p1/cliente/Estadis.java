@@ -1,14 +1,14 @@
 package cliente;
 
 // Imports necesarios para RabbitMQ
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
+//import com.rabbitmq.client.Channel;
+//import com.rabbitmq.client.Connection;
+//import com.rabbitmq.client.ConnectionFactory;
 
 // Imports necesarios para RMI
-import java.io.IOException;
+//import java.io.IOException;
 import java.rmi.Naming;
-import java.rmi.RemoteException;
+//import java.rmi.RemoteException;
 
 // Imports necesarios para invocar via RMI métodos del sislog
 import srvdns.SrvDNSInterface;
@@ -23,8 +23,8 @@ public class Estadis {
         try {
             // Localizar via rmiregistry al servidor DNS
             // A RELLENAR:
-            |
-            |
+            SrvDNSInterface srv = (SrvDNSInterface) Naming.lookup("ServidorDNS");
+            
 
             ncols = srv.obtenerNumeroTiposRec();
             nfils = srv.obtenerNumeroDominios();
@@ -35,9 +35,9 @@ public class Estadis {
             System.out.print("\t\t");
 
             // A RELLENAR:
-            |
-            |
-            |
+            for(int i = 0; i < ncols; i++){
+                System.out.println(srv.obtenerNombreNthTipoRec(i) + "\t");
+            }
 
             // Imprimir cabecera de la última columna "TOTAL"
             System.out.println("TOTAL");
@@ -50,8 +50,7 @@ public class Estadis {
                 for (int j = 0; j < ncols; j++) {
                     // Obtener el elemento de la fila i, columna j
                     // A RELLENAR:
-                    |
-                    |
+                    n = srv.obtenerValorNthDomNthTipoRec(i, j);
 
                     // Imprimir el valor y acumularlo en la suma
                     System.out.print(n + "\t");
@@ -69,17 +68,13 @@ public class Estadis {
                 for (int i = 0; i < nfils; i++) {
                     // Obtener el elemento de la fila i, columna j
                     // A RELLENAR:
-                    |
-                    |
-                    
+                    n = srv.obtenerValorNthDomNthTipoRec(i, j);
                     suma += n;
                 }
                 // Imprimir el total de esa columna y agregarlo al total final
                 // A RELLENAR:
-                |
-                |
-                |
-                
+                System.out.print(suma + "\t\t");
+                total += suma;
             }
             // Imprimir total final
             System.out.println(total);
