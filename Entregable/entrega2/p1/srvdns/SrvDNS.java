@@ -33,8 +33,10 @@ import java.util.ListIterator;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import cliente.Cliente;
+import cliente.ClienteImpl;
 // Import necesario para acceder a los métodos del cliente
 import cliente.ClienteInterface;
+import cliente.Estadis;
 
 // ===================================================================
 // Las dos clases siguientes son hilos que se ejecutarán de forma concurrente
@@ -48,7 +50,7 @@ import cliente.ClienteInterface;
 // Clase ReceptorConsultas. Recibe mensajes por RabbitMQ, y los mete en la cola bloqueante 
 // de eventos para que sean procesados por los hilos Worker
 class ReceptorConsultas extends Thread {
-    private final static String NOMBRE_COLA_RABBIT = "cola_dns"; // A RELLENAR (cambiar nombre)
+    private final static String NOMBRE_COLA_RABBIT = "DanielAG"; // A RELLENAR (cambiar nombre)
     private ArrayBlockingQueue<String> qrequest;  // Cola bloqueante para comunicar con los workers
 
     // El constructor recibe una referencia a la cola bloqueante
@@ -153,7 +155,7 @@ class Worker extends Thread {
                         // la primera parte del mensaje recibido desde la cola
                         // A RELLENAR:
                         String nombreCliente = partes[0]; // El primer elemento es el nombre del cliente RMI
-                        Cliente rmiCli = (ClienteRMI)
+                        ClienteImpl rmiCli = (ClienteImpl)Naming.lookup(nombreCliente);
 
                         // Procesar la consulta
                         if (partes[2].equals("MX") || partes[2].equals("NS")) {
@@ -314,15 +316,18 @@ public class SrvDNS {
 
         // Primero se crea la cola interna de sincronización entre hilos
         // A RELLENAR:
-        |
-        |
+        cola_interna = new ArrayBlockingQueue<>(num_workers);
 
         try {
             // Arrancar el servidor RMI para el cliente Estadis y registrarlo
             // A RELLENAR:
-            |
-            |
-            |
+            SrvDNSImpl srv = new SrvDNSImpl(accountq);
+
+            //int puertoRMI = 1099; // Puerto RMI estándar
+            String nomServ = "ServidorDNS"; // Nombre del cliente en el registro RMI
+            //String urlSrv = "rmi://localhost:" + puertoRMI + "/" + nombrServ;
+
+            Naming.rebind(nomServ, srv);
 
             System.out.println("SrvDNS registrado para RMI");
         } catch (Exception e) {
@@ -334,10 +339,10 @@ public class SrvDNS {
         // Crear los hilos Worker y arrancarlos
         workers = new Worker[num_workers];
         // A RELLENAR:
-        |
-        |
-        |
-        |
+        for (int i = 0; i < num_workers; i++) {
+            workers[i] = new Worker(cacherecords, accountq, cola_interna, nameflog);
+            workers[i].start(); // Arrancar el hilo
+        }
 
         // Crear el hilo receptor de consultas y arrancarlo
         receptor_consultas = new ReceptorConsultas(cola_interna);

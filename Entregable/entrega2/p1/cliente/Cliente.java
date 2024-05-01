@@ -12,11 +12,11 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 // Imports necesarios para RMI
-import java.io.IOException;
+//import java.io.IOException;
 import java.rmi.Naming;
 
 public class Cliente {
-    private final static String NOMBRE_COLA = "cola_dns";  // A RELLENAR (cambiar nombre a cola)
+    private final static String NOMBRE_COLA = "DanielAG";  // A RELLENAR (cambiar nombre a cola)
 
     static int id; // Identificador del cliente
 
@@ -43,18 +43,25 @@ public class Cliente {
             // Arrancar el la parte servidor RMI del cliente y registrarlo
             // ante rmiregistry con el nombre adecuado a este cliente
             // A RELLENAR:
-            |
-            |
-            |
-            |
+            ClienteImpl cli = new ClienteImpl();
+            int puertoRMI = 1099; // Puerto RMI estándar
+
+            // Registrar el objeto remoto en el rmiregistry con un nombre adecuado
+            String nombreCliente = "" + id; // Nombre del cliente en el registro RMI
+            String urlCliente = "rmi://localhost:" + puertoRMI + "/" + nombreCliente;
+
+            Naming.rebind(urlCliente, cli);
+            System.out.println("El cliente RMI está listo.");
 
             // Conectar con Rabbit para poder enviar peticiones a la cola
             // A RELLENAR:
-            |
-            |
-            |
-            |
-            |
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setHost("localhost");
+            final Connection connection = factory.newConnection();
+            final Channel channel = connection.createChannel();
+            channel.queueDeclare(NOMBRE_COLA, true, false, false, null);
+            System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+            channel.basicQos(1);
 
             // Realizar el envio de los eventos
             enviar_consultas(channel, cli, argv[1], argv[2]);
@@ -89,7 +96,7 @@ public class Cliente {
         BufferedWriter bw = new BufferedWriter(new FileWriter(fich_resp));
         String msg;       // Para componer los mensajes a enviar por Rabbit
         String respuesta; // Respuesta a la petición realizada
-        String linea;
+        //String linea;
 
         try {
             String query = br.readLine();
@@ -103,15 +110,14 @@ public class Cliente {
                 // y sin espacios. Este mensaje se envía a la cola Rabbit
 
                 // A RELLENAR:
-                |
-                |
+                msg = id + "," + query;
+                channel.basicPublish(msg, NOMBRE_COLA, null, null);
 
                 // Se espera la respuesta que llegará por rmi y cuando se reciba se
                 // escribe en el fichero de respuestas
                 // A RELLENAR:
-                |
-                |
-                |
+                respuesta = cli.getRespuesta();
+                bw.write(respuesta);
 
                 // Leer la siguiente consulta del fichero
                 query = br.readLine();
