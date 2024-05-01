@@ -38,8 +38,7 @@ public class ClienteImpl extends UnicastRemoteObject implements ClienteInterface
         // Recibe la respuesta a la consulta y se limita a guardarla en la cola interna
         try {
             // A RELLENAR:
-            |
-            |
+            cola.put(answer);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -51,8 +50,7 @@ public class ClienteImpl extends UnicastRemoteObject implements ClienteInterface
         // Espera a que aparezca la respuesta a la última consulta
         // y retorna su valor
         // A RELLENAR:
-        |
-        |
+        return cola.take();
         
     }
 
