@@ -12,8 +12,9 @@ import com.rabbitmq.client.AMQP;
 // Imports necesarios para usar RMI
 import java.io.IOException;
 import java.rmi.Naming;
-import java.rmi.RemoteException;
-
+//import java.rmi.RemoteException;
+//import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 // Import necesario para leer fichero registros y escribir en fichero de log
 import java.io.FileWriter;
 import java.io.FileReader;
@@ -27,16 +28,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.ListIterator;
+//import java.util.ListIterator;
 
 // Cola bloqueante para comunicar el hilo ReceptorConsultas y los hilos Worker
 import java.util.concurrent.ArrayBlockingQueue;
 
-import cliente.Cliente;
+//import cliente.Cliente;
 import cliente.ClienteImpl;
 // Import necesario para acceder a los métodos del cliente
-import cliente.ClienteInterface;
-import cliente.Estadis;
+//import cliente.ClienteInterface;
+//import cliente.Estadis;
 
 // ===================================================================
 // Las dos clases siguientes son hilos que se ejecutarán de forma concurrente
@@ -87,13 +88,11 @@ class ReceptorConsultas extends Thread {
                     System.out.println("ReceptorConsultas: Recibida consulta = " + msg);
 
                     // A RELLENAR:
-                    |
-                    |
-                    |
-                    |
-                    |
-                    |
-
+                    try {
+                        qrequest.put(msg);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             };
             System.out.println("ReceptorConsultas. Esperando llegada de consultas de resolución DNS");
@@ -190,8 +189,7 @@ class Worker extends Thread {
                         }
                         // Enviar la respuesta al cliente
                         // A RELLENAR:
-                        |
-                        |
+                        rmiCli.setRespuesta(cadena);
 
                     } catch (Exception e) {
                         // Cualquier excepción simplemente se imprime
@@ -205,8 +203,8 @@ class Worker extends Thread {
                         String linea;
                         // Preparar la línea a volcar
                         // A RELLENAR:
-                        |
-                        |
+                        SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                        linea = dtf.format(fecha) + cadena;
 
                         BufferedWriter bw = new BufferedWriter(new FileWriter(nflog, true));
                         bw.write(linea);
