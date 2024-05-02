@@ -36,7 +36,7 @@ public class Estadis {
 
             // A RELLENAR:
             for(int i = 0; i < ncols; i++){
-                System.out.println(srv.obtenerNombreNthTipoRec(i) + "\t");
+                System.out.print(srv.obtenerNombreNthTipoRec(i) + "\t");
             }
 
             // Imprimir cabecera de la última columna "TOTAL"
@@ -73,7 +73,7 @@ public class Estadis {
                 }
                 // Imprimir el total de esa columna y agregarlo al total final
                 // A RELLENAR:
-                System.out.print(suma + "\t\t");
+                System.out.print(suma + "\t");
                 total += suma;
             }
             // Imprimir total final

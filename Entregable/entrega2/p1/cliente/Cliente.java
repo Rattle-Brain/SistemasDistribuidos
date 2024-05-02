@@ -44,13 +44,9 @@ public class Cliente {
             // ante rmiregistry con el nombre adecuado a este cliente
             // A RELLENAR:
             ClienteImpl cli = new ClienteImpl();
-            int puertoRMI = 1099; // Puerto RMI estándar
-
-            // Registrar el objeto remoto en el rmiregistry con un nombre adecuado
             String nombreCliente = "" + id; // Nombre del cliente en el registro RMI
-            String urlCliente = "rmi://localhost:" + puertoRMI + "/" + nombreCliente;
 
-            Naming.rebind(urlCliente, cli);
+            Naming.rebind(nombreCliente, cli);
             System.out.println("El cliente RMI está listo.");
 
             // Conectar con Rabbit para poder enviar peticiones a la cola
@@ -61,7 +57,7 @@ public class Cliente {
             final Channel channel = connection.createChannel();
             channel.queueDeclare(NOMBRE_COLA, true, false, false, null);
             System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-            channel.basicQos(1);
+            //channel.basicQos(1);
 
             // Realizar el envio de los eventos
             enviar_consultas(channel, cli, argv[1], argv[2]);
@@ -111,7 +107,8 @@ public class Cliente {
 
                 // A RELLENAR:
                 msg = id + "," + query;
-                channel.basicPublish(msg, NOMBRE_COLA, null, null);
+                byte[] msg_to_send = msg.getBytes();
+                channel.basicPublish("", NOMBRE_COLA, null, msg_to_send);
 
                 // Se espera la respuesta que llegará por rmi y cuando se reciba se
                 // escribe en el fichero de respuestas

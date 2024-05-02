@@ -12,8 +12,6 @@ import com.rabbitmq.client.AMQP;
 // Imports necesarios para usar RMI
 import java.io.IOException;
 import java.rmi.Naming;
-//import java.rmi.RemoteException;
-//import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 // Import necesario para leer fichero registros y escribir en fichero de log
 import java.io.FileWriter;
@@ -28,16 +26,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-//import java.util.ListIterator;
 
 // Cola bloqueante para comunicar el hilo ReceptorConsultas y los hilos Worker
 import java.util.concurrent.ArrayBlockingQueue;
 
-//import cliente.Cliente;
-import cliente.ClienteImpl;
 // Import necesario para acceder a los métodos del cliente
-//import cliente.ClienteInterface;
-//import cliente.Estadis;
+import cliente.ClienteInterface;
 
 // ===================================================================
 // Las dos clases siguientes son hilos que se ejecutarán de forma concurrente
@@ -71,7 +65,7 @@ class ReceptorConsultas extends Thread {
             final Channel channel = connection.createChannel();
             channel.queueDeclare(NOMBRE_COLA_RABBIT, true, false, false, null);
             System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-            channel.basicQos(1);
+            //channel.basicQos(1);
 
             // Espera por peticiones en la cola rabbitMQ
             Consumer consumer = new DefaultConsumer(channel) {
@@ -154,7 +148,7 @@ class Worker extends Thread {
                         // la primera parte del mensaje recibido desde la cola
                         // A RELLENAR:
                         String nombreCliente = partes[0]; // El primer elemento es el nombre del cliente RMI
-                        ClienteImpl rmiCli = (ClienteImpl)Naming.lookup(nombreCliente);
+                        ClienteInterface rmiCli = (ClienteInterface)Naming.lookup(nombreCliente);
 
                         // Procesar la consulta
                         if (partes[2].equals("MX") || partes[2].equals("NS")) {
@@ -204,7 +198,7 @@ class Worker extends Thread {
                         // Preparar la línea a volcar
                         // A RELLENAR:
                         SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-                        linea = dtf.format(fecha) + cadena;
+                        linea = dtf.format(fecha) +" "+ cadena;
 
                         BufferedWriter bw = new BufferedWriter(new FileWriter(nflog, true));
                         bw.write(linea);
@@ -314,7 +308,7 @@ public class SrvDNS {
 
         // Primero se crea la cola interna de sincronización entre hilos
         // A RELLENAR:
-        cola_interna = new ArrayBlockingQueue<>(num_workers);
+        cola_interna = new ArrayBlockingQueue<String>(num_workers);
 
         try {
             // Arrancar el servidor RMI para el cliente Estadis y registrarlo
