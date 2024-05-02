@@ -2,11 +2,6 @@ package srvdns;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-//import java.util.concurrent.ArrayBlockingQueue;
-
-// Import para trabajar con listas
-//import java.util.List;
-//import java.util.ArrayList;
 
 /*
 La clase SrvDNSImpl implementa el interfaz SrvDNSInterface:

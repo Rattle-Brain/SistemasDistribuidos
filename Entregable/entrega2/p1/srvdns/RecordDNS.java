@@ -1,9 +1,5 @@
 package srvdns;
 
-// Imports  necesarios
-//import java.util.ArrayList;
-//import java.util.List;
-
 // La clase siguiente almacena información de los registros DNS
 class RecordDNS {
     String nombredominio;

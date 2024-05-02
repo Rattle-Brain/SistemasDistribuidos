@@ -1,14 +1,6 @@
 package cliente;
 
-// Imports necesarios para RabbitMQ
-//import com.rabbitmq.client.Channel;
-//import com.rabbitmq.client.Connection;
-//import com.rabbitmq.client.ConnectionFactory;
-
-// Imports necesarios para RMI
-//import java.io.IOException;
 import java.rmi.Naming;
-//import java.rmi.RemoteException;
 
 // Imports necesarios para invocar via RMI métodos del sislog
 import srvdns.SrvDNSInterface;

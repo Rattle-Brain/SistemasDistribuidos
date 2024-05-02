@@ -12,7 +12,6 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 // Imports necesarios para RMI
-//import java.io.IOException;
 import java.rmi.Naming;
 
 public class Cliente {
@@ -114,7 +113,7 @@ public class Cliente {
                 // escribe en el fichero de respuestas
                 // A RELLENAR:
                 respuesta = cli.getRespuesta();
-                bw.write(respuesta);
+                bw.write(respuesta + "\n");
 
                 // Leer la siguiente consulta del fichero
                 query = br.readLine();
