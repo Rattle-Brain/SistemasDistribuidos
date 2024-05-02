@@ -201,7 +201,7 @@ class Worker extends Thread {
                         linea = dtf.format(fecha) +" "+ cadena;
 
                         BufferedWriter bw = new BufferedWriter(new FileWriter(nflog, true));
-                        bw.write(linea);
+                        bw.write(linea +"\n");
                         bw.close();
                     } catch (IOException e) {
                         e.printStackTrace();
