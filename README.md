@@ -25,7 +25,7 @@ void initTCPConx() {
 
 Este repositorio es una recopilación de los ejercicios realizados en clase y las entregas de PL de la asignatura de Sistemas Distribuidos impartida por la Universidad de Oviedo en la EPI a lo largo del Curso Académico 2023-2024. El repositorio ha sido privado a lo largo del año para evitar detecciones de plagio. Ahora que ya no lo necesito, puede que alguien le encuentre utilidad. No hice todo este trabajo para nada.
 
-El código es funcional y tanto la parte Práctica de PL como ambas entregas se ejecutan perfectamente. Tienes completa libertad para clonar, copiar, modificar, jugar, romper o corregir el código aquí presente pero **esto exento de cualquier responsabilidad por suspensos o detecciones de plagio si decides usarlo.** Al final el código es público para todos y cada uno decide como usarlo.
+El código es funcional y tanto la parte Práctica de PL como ambas entregas se ejecutan perfectamente. Tienes completa libertad para clonar, copiar, modificar, jugar, romper o corregir el código aquí presente pero **estoy exento de cualquier responsabilidad por suspensos o detecciones de plagio si decides usarlo.** Al final el código es público para todos y cada uno decide como usarlo.
 
 Mi consejo es que se tome como una forma de verificar y comparar tus resultados o tu código y no como una base de la que partir para realizar las entregas.
 
