@@ -90,4 +90,15 @@ Las contribuciones a este proyecto son bienvenidas. Si deseas proponer nuevas ca
 
 ## License
 
-Este proyecto está bajo la [*Unlicense License*](LICENSE). Consulta la licencia provista en el repositorio para más detalles.
+Este proyecto está bajo la [*GNU GPL-3.0 license*](LICENSE). 
+
+```plain
+PERMISSIONS 	        CONDITIONS 	                    LIMITATIONS
+Commercial use          Disclose source                     Liability
+Distribution            License and copyright notice        Warranty
+Modification            Same license
+Patent use              State changes
+Private use
+```
+
+Consulta la licencia provista en el repositorio para más detalles.
