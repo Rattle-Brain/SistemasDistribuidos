@@ -5,6 +5,8 @@
 ¡Bienvenido al repositorio "Sistemas Distribuidos"! Este proyecto se dedica a explorar e implementar sistemas distribuidos eficientes desde cero utilizando el lenguaje de programación C.
 
 ```C
+#define PORT 9090
+
 void initTCPConx() {
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
@@ -44,7 +46,7 @@ Para comenzar con este proyecto, sigue estos pasos:
 1. Clona el repositorio en tu máquina local:
 
    ```bash
-   git clone https://github.com/Rattle-Brain/SisDis.git
+   git clone https://github.com/Rattle-Brain/SistemasDistribuidos.git
    ```
 
 2. Explora el código fuente, la documentación y los ejemplos proporcionados en el repositorio.
